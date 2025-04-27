@@ -1,0 +1,5 @@
+Full Stack Doctor Appointment Booking system. This is step by step tutorial we will use React JS, MongoDB, Express JS and Node JS to build our own appointment booking website, so It will be a MERN Stack project. You can use thi project for your Resume or College projects.
+
+This full stack appointment booking system can be used by a doctor or a hospital. Because in this project we have created 3 level of authentication. 1st one is for Patients, so that patient can login on the website, book appointment with doctor and manage the booked appointment. 2nd one is doctor login, so that doctor can login and check the appointment and their earning. Doctor can update their profile also from dashboard. 3rd one is Admin Dashboard where admin can manages the appointment and admin can also manage the doctor profile.
+
+In this full stack application we will integrate the online payment gateways so that user can pay the appointment fee online on this website. You can also customize this full stack appointment booking app and use this project for your college projects and your personal portfolio or resume.
