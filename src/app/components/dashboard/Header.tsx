@@ -7,7 +7,7 @@ import Logo from "@/../public/assets_frontend/logo.svg";
 const Header = () => {
   return (
     <>
-      <div className="flex justify-between items-center  p-4  border-b border-black">
+      <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
         <div className="logo">
           <Image width={150} height={150} src={Logo} alt="Logo" />
         </div>
@@ -25,7 +25,7 @@ const Header = () => {
 
             <li className=" text-sm font-medium ">
               <Link
-                href="/"
+                href="../../dashbord/doctors"
                 className="relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 ALL DOCTORS
