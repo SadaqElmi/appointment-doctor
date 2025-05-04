@@ -9,7 +9,9 @@ const Header = () => {
     <>
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
         <div className="logo">
-          <Image width={150} height={150} src={Logo} alt="Logo" />
+          <Link href="/">
+            <Image width={150} height={150} src={Logo} alt="Logo" />
+          </Link>
         </div>
 
         <div className="pages">

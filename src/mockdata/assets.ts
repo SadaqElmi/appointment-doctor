@@ -164,7 +164,7 @@ export const doctors = [
     _id: "doc6",
     name: "Dr. Andrew Williams",
     image: doc6,
-    speciality: "Neurologist",
+    speciality: "Gastroenterologist",
     degree: "MBBS",
     experience: "4 Years",
     about:
@@ -284,7 +284,7 @@ export const doctors = [
     _id: "doc14",
     name: "Dr. Ryan Martinez",
     image: doc14,
-    speciality: "Gynecologist",
+    speciality: "Gastroenterologist",
     degree: "MBBS",
     experience: "3 Years",
     about:
@@ -299,7 +299,7 @@ export const doctors = [
     _id: "doc15",
     name: "Dr. Amelia Hill",
     image: doc15,
-    speciality: "Dermatologist",
+    speciality: "Gastroenterologist",
     degree: "MBBS",
     experience: "1 Years",
     about:

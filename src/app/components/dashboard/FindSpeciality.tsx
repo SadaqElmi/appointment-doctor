@@ -1,7 +1,10 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { specialityData } from "@/mockdata/assets";
+import { useRouter } from "next/navigation";
 function FindSpeciality() {
+  const router = useRouter();
   return (
     <>
       <div className="flex flex-col items-center justify-center py-16 mb-16 ">
@@ -17,6 +20,9 @@ function FindSpeciality() {
             {specialityData.map((item, index) => (
               <div
                 key={index}
+                onClick={() =>
+                  router.push(`../dashbord/doctors/${item.speciality}`)
+                }
                 className="flex flex-col justify-center items-center hover:translate-y-[-10px] transition-all duration-500 cursor-pointer"
               >
                 <Image
