@@ -6,8 +6,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 const HeroSection = () => {
   return (
-    <div className="py-20  ">
-      <div className=" font-bold bg-[#5f6fff] rounded-2xl px-10 ">
+    <div>
+      <div className=" font-bold bg-[#5f6fff] rounded-2xl ">
         <div className="flex   justify-between   text-white">
           <div className="flex flex-col items-start gap-3 justify-center w-full py-[128px] px-10">
             <h1 className="text-5xl leading-[60px] font-bold">

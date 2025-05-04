@@ -17,7 +17,7 @@ const Header = () => {
             <li className=" text-sm font-medium ">
               <Link
                 href="/"
-                className="relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
+                className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 Home
               </Link>
@@ -26,23 +26,23 @@ const Header = () => {
             <li className=" text-sm font-medium ">
               <Link
                 href="../../dashbord/doctors"
-                className="relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
+                className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 ALL DOCTORS
               </Link>
             </li>
             <li className=" text-sm font-medium ">
               <Link
-                href="/"
-                className="relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
+                href="../../dashbord/about"
+                className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 ABOUT
               </Link>
             </li>
             <li className=" text-sm font-medium ">
               <Link
-                href="/"
-                className="relative after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
+                href="../../dashbord/contact"
+                className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 CONTACT
               </Link>
