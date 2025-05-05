@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { doctors } from "@/mockdata/assets";
+import { doctors, specialityData } from "@/mockdata/assets";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const specialities = [
   "All",
@@ -17,17 +17,24 @@ const specialities = [
 ];
 
 const Doctors = () => {
-  const { speciality } = useParams();
   const [selectedSpecialist, setSelectedSpecialist] = useState("All");
-  const router = useRouter();
   const [showFilters, setShowFilters] = useState(false);
+
+  const router = useRouter();
+  const { speciality } = useParams();
+
+  const decodedSpeciality = decodeURIComponent(
+    Array.isArray(speciality) ? speciality[0] : speciality || "All"
+  );
+
+  useEffect(() => {
+    setSelectedSpecialist(decodedSpeciality);
+  }, [decodedSpeciality]);
 
   const filteredDoctors =
     selectedSpecialist === "All"
       ? doctors
       : doctors.filter((doc) => doc.speciality === selectedSpecialist);
-
-  const doctor = doctors.find((doc) => doc.speciality === speciality);
 
   return (
     <div>
@@ -49,7 +56,10 @@ const Doctors = () => {
           {specialities.map((spec) => (
             <p
               key={spec}
-              onClick={() => setSelectedSpecialist(spec)}
+              onClick={() => {
+                setSelectedSpecialist(spec);
+                router.push(`/dashbord/doctors/${encodeURIComponent(spec)}`);
+              }}
               className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
                 selectedSpecialist === spec ? "bg-blue-100 font-medium" : ""
               }`}
@@ -63,9 +73,7 @@ const Doctors = () => {
           {filteredDoctors.map((item, index) => (
             <div
               key={index}
-              onClick={() =>
-                router.push(`../../dashbord/appointment/${item._id}`)
-              }
+              onClick={() => router.push(`/dashbord/appointment/${item._id}`)}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image
