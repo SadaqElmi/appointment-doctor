@@ -3,13 +3,15 @@
 import { useParams, useRouter } from "next/navigation";
 import { doctors } from "@/mockdata/assets";
 import Image from "next/image";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { assets } from "@/mockdata/assets";
+import toast from "react-hot-toast";
 
 const AppointmentDoctor = () => {
   const { id } = useParams();
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = React.useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   // Generate dates for the next 7 days
   const dates = useMemo(() => {
@@ -26,10 +28,62 @@ const AppointmentDoctor = () => {
     });
   }, []);
 
+  // Available time slots
+  const timeSlots = useMemo(
+    () => [
+      "10:30 am",
+      "11:00 am",
+      "11:30 am",
+      "12:00 pm",
+      "12:30 pm",
+      "1:00 pm",
+      "1:30 pm",
+    ],
+    []
+  );
+
   const doctor = doctors.find((doc) => doc._id === id);
   const relatedDoctors = doctors.filter(
     (item) => item.speciality === doctor?.speciality && item._id !== doctor?._id
   );
+
+  const handleBookAppointment = () => {
+    if (!selectedDate) {
+      toast.error("Please select a date first");
+      return;
+    }
+    if (!selectedTime) {
+      toast.error("Please select a time slot");
+      return;
+    }
+
+    if (!doctor) return;
+
+    const appointment = {
+      doctorId: doctor._id,
+      doctorName: doctor.name,
+      date: selectedDate,
+      time: selectedTime,
+      address: doctor.address,
+      speciality: doctor.speciality,
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      const existingAppointments = JSON.parse(
+        localStorage.getItem("appointments") || "[]"
+      );
+      const updatedAppointments = [...existingAppointments, appointment];
+      localStorage.setItem("appointments", JSON.stringify(updatedAppointments));
+      toast.success("Appointment booked successfully!");
+      setSelectedDate("");
+      setSelectedTime(null);
+      router.push("/dashbord/my-appointments");
+    } catch (error) {
+      console.error("Failed to save appointment:", error);
+      toast.error("Failed to book appointment. Please try again.");
+    }
+  };
 
   if (!doctor) return <p>Doctor not found</p>;
 
@@ -45,7 +99,7 @@ const AppointmentDoctor = () => {
             height={280}
           />
         </div>
-        <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 shadow-md">
+        <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 ">
           <p className="flex items-center gap-2 text-3xl font-medium text-gray-700">
             {doctor.name}
             <Image src={assets.verified_icon} className="w-5" alt="verified" />
@@ -78,11 +132,14 @@ const AppointmentDoctor = () => {
           {dates.map((d) => (
             <div
               key={d.date}
-              onClick={() => setSelectedDate(d.date)}
-              className={`text-center p-4 min-w-16 rounded-full cursor-pointer border border-white transition-colors ${
+              onClick={() => {
+                setSelectedDate(d.date);
+                setSelectedTime(null); // Reset time when date changes
+              }}
+              className={`text-center  p-4 min-w-16 rounded-full cursor-pointer border transition-colors ${
                 selectedDate === d.date
-                  ? "bg-[#5f6fff] text-white border-primary"
-                  : "border-[#DDDDDD] hover:border-primary/50"
+                  ? "bg-[#5f6fff] text-white border-[#5f6fff]"
+                  : "border-[#5f6fff] hover:border-[#5f6fff]/50"
               }`}
             >
               <p className="text-sm">{d.day}</p>
@@ -90,7 +147,30 @@ const AppointmentDoctor = () => {
             </div>
           ))}
         </div>
-        <button className="bg-[#5f6fff] text-white text-sm font-light px-20 py-3 rounded-full my-6">
+        {selectedDate && (
+          <div className="mt-6 transition-all duration-300 ease-in-out opacity-100">
+            <div className="flex gap-3 flex-wrap">
+              {timeSlots.map((time) => (
+                <button
+                  key={time}
+                  onClick={() => setSelectedTime(time)}
+                  className={`px-4 py-2 rounded-full text-sm cursor-pointer transition-colors ${
+                    selectedTime === time
+                      ? "bg-[#5f6fff] text-white"
+                      : "text-[#949494] bg-gray-50 hover:bg-gray-100"
+                  }`}
+                >
+                  {time}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={handleBookAppointment}
+          className="bg-[#5f6fff] text-white text-sm font-light px-20 py-3 rounded-full my-6 cursor-pointer"
+        >
           Book an appointment
         </button>
       </div>

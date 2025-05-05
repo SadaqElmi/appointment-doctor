@@ -2,15 +2,24 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import Logo from "@/../public/assets_frontend/logo.svg";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { assets } from "@/mockdata/assets";
 const Header = () => {
   return (
     <>
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
         <div className="logo">
           <Link href="/">
-            <Image width={150} height={150} src={Logo} alt="Logo" />
+            <Image width={150} height={150} src={assets.logo} alt="Logo" />
           </Link>
         </div>
 
@@ -52,9 +61,40 @@ const Header = () => {
           </ul>
         </div>
 
-        <Button className="bg-blue-500 text-white hover:bg-blue-600 px-4 py-4 rounded-full">
-          <Link href="/">Create Account </Link>
-        </Button>
+        <div className="flex items-center space-x-4 cursor-pointer">
+          <Button className="bg-blue-500 text-white hover:bg-[#5F6FFF] px-4 py-4 rounded-full">
+            <Link href="/">Create Account </Link>
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center justify-center space-x-2 border-none outline-none focus:outline-none">
+              <Avatar>
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <Image src={assets.dropdown_icon} alt="DropdownMenuItem" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <Link href="../../dashbord/profile" className="w-full">
+                  <DropdownMenuItem>My Profile</DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem>
+                  <Link href="../../dashbord/my-appointments">
+                    My Appointments
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </>
   );

@@ -7,7 +7,10 @@ const Dashboard = () => {
   return (
     <>
       <HeroSection />
-      <FindSpeciality />
+
+      <div id="speciality">
+        <FindSpeciality />
+      </div>
       <TopDoctors />
       <BookAppointment />
     </>

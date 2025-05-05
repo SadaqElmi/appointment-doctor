@@ -1,8 +1,11 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { doctors } from "@/mockdata/assets";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 function TopDoctors() {
+  const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center py-10 mb-16 ">
       <div className="flex flex-col gap-3 justify-center items-center w-2/4 mb-20">
@@ -15,6 +18,9 @@ function TopDoctors() {
         {doctors.map((item, index) => (
           <div
             key={index}
+            onClick={() =>
+              router.push(`../../dashbord/appointment/${item._id}`)
+            }
             className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
           >
             <Image

@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import GroupImage from "@/../public/assets_frontend/group_profiles.png";
-import HeaderImage from "@/../public/assets_frontend/header_img.png";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { assets } from "@/mockdata/assets";
 const HeroSection = () => {
   return (
     <div>
@@ -15,7 +15,7 @@ const HeroSection = () => {
             </h1>
             <div className="flex w-full items-center justify-center  gap-2 ">
               <Image
-                src={GroupImage}
+                src={assets.group_profiles}
                 alt="Group Image"
                 className="w-28 object-cover "
                 priority
@@ -26,14 +26,25 @@ const HeroSection = () => {
                 schedule your appointment hassle-free.
               </p>
             </div>
-            <Button className="bg-white hover:bg-white hover:cursor-pointer py-5 px-5 rounded-full text-black font-light ">
-              Book Appointment
-            </Button>
+            <Link
+              href="#speciality"
+              passHref
+              className="flex items-center gap-2"
+            >
+              <Button className="bg-white hover:bg-white hover:cursor-pointer py-5 px-5 rounded-full text-black font-light ">
+                Book Appointment
+                <Image
+                  src={assets.arrow_icon}
+                  alt="Group Image"
+                  className="w-3 object-cover "
+                />
+              </Button>
+            </Link>
           </div>
 
           <div className="relative flex items-center justify-center w-full mt-4">
             <Image
-              src={HeaderImage}
+              src={assets.header_img}
               alt="Header Image"
               className="w-full  absolute bottom-[0px] object-cover"
             />
