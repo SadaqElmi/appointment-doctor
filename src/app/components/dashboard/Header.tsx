@@ -63,7 +63,7 @@ const Header = () => {
 
         <div className="flex items-center space-x-4 cursor-pointer">
           <Button className="bg-blue-500 text-white hover:bg-[#5F6FFF] px-4 py-4 rounded-full">
-            <Link href="/">Create Account </Link>
+            <Link href="../../singup">Create Account </Link>
           </Button>
 
           <DropdownMenu>
