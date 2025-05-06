@@ -61,7 +61,7 @@ const Doctors = () => {
             <div
               key={index}
               onClick={() =>
-                router.push(`../../dashbord/appointment/${item._id}`)
+                router.push(`../../dashboard/appointment/${item._id}`)
               }
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
