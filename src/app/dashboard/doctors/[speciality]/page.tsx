@@ -58,7 +58,7 @@ const Doctors = () => {
               key={spec}
               onClick={() => {
                 setSelectedSpecialist(spec);
-                router.push(`/dashbord/doctors/${encodeURIComponent(spec)}`);
+                router.push(`/dashboard/doctors/${encodeURIComponent(spec)}`);
               }}
               className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
                 selectedSpecialist === spec ? "bg-blue-100 font-medium" : ""
@@ -73,7 +73,7 @@ const Doctors = () => {
           {filteredDoctors.map((item, index) => (
             <div
               key={index}
-              onClick={() => router.push(`/dashbord/appointment/${item._id}`)}
+              onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image

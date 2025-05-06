@@ -21,7 +21,7 @@ function FindSpeciality() {
               <div
                 key={index}
                 onClick={() =>
-                  router.push(`../dashbord/doctors/${item.speciality}`)
+                  router.push(`../dashboard/doctors/${item.speciality}`)
                 }
                 className="flex flex-col justify-center items-center hover:translate-y-[-10px] transition-all duration-500 cursor-pointer"
               >

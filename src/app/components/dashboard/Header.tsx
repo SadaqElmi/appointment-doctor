@@ -18,7 +18,7 @@ const Header = () => {
     <>
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
         <div className="logo">
-          <Link href="/">
+          <Link href="../../dashboard">
             <Image width={150} height={150} src={assets.logo} alt="Logo" />
           </Link>
         </div>
@@ -27,7 +27,7 @@ const Header = () => {
           <ul className="flex space-x-4 relative justify-center items-center">
             <li className=" text-sm font-medium ">
               <Link
-                href="/"
+                href="../../dashboard"
                 className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 Home
@@ -36,7 +36,7 @@ const Header = () => {
 
             <li className=" text-sm font-medium ">
               <Link
-                href="../../dashbord/doctors"
+                href="../../dashboard/doctors"
                 className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 ALL DOCTORS
@@ -44,7 +44,7 @@ const Header = () => {
             </li>
             <li className=" text-sm font-medium ">
               <Link
-                href="../../dashbord/about"
+                href="../../dashboard/about"
                 className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 ABOUT
@@ -52,7 +52,7 @@ const Header = () => {
             </li>
             <li className=" text-sm font-medium ">
               <Link
-                href="../../dashbord/contact"
+                href="../../dashboard/contact"
                 className="relative after:absolute after:left-0 after:bottom-[-5px] after:w-0 after:h-[2px] after:bg-blue-500 after:transition-all hover:after:w-full"
               >
                 CONTACT
@@ -81,11 +81,11 @@ const Header = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <Link href="../../dashbord/profile" className="w-full">
+                <Link href="../../dashboard/profile" className="w-full">
                   <DropdownMenuItem>My Profile</DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem>
-                  <Link href="../../dashbord/my-appointments">
+                  <Link href="../../dashboard/my-appointments">
                     My Appointments
                   </Link>
                 </DropdownMenuItem>

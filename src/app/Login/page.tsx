@@ -30,14 +30,14 @@ const Login = () => {
     });
 
     if (res?.ok) {
-      router.push("../");
+      router.push("./dashboard");
     } else {
       alert("Login failed");
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center ">
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
