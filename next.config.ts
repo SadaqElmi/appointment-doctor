@@ -1,5 +1,6 @@
 // next.config.ts
 const nextConfig = {
+  devIndicators: false,
   webpack(config: any) {
     config.module.rules.push({
       test: /\.svg$/,
