@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { assets } from "@/mockdata/assets";
-const Header = () => {
+const HeaderDashboard = () => {
   return (
     <>
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
@@ -100,4 +100,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderDashboard;

@@ -1,26 +1,9 @@
-// Extend JWT type and Session type properly
-import NextAuth, { type DefaultSession } from "next-auth";
+// app/api/auth/[...nextauth]/route.ts
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthOptions, Session } from "next-auth";
 
-// Extend the Session type
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user: {
-      id: string;
-      email: string;
-    } & DefaultSession["user"];
-  }
-}
-
-// Extend the JWT type
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string;
-    email: string;
-  }
-}
-
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -29,30 +12,29 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("Received credentials:", credentials);
-
         const users = [
           {
             id: "1",
             name: "Sadaq",
             email: "sadaq@gmail.com",
             password: "sadaq123",
+            role: "user",
+          },
+          {
+            id: "2",
+            name: "admin",
+            email: "admin@gmail.com",
+            password: "admin123",
+            role: "admin",
           },
         ];
 
-        if (!credentials?.email || !credentials.password) {
-          console.log("Missing credentials");
-          return null;
-        }
+        if (!credentials?.email || !credentials.password) return null;
 
         const user = users.find(
           (u) =>
             u.email === credentials.email && u.password === credentials.password
         );
-
-        if (!user) {
-          console.log("User not found or password mismatch");
-        }
 
         return user ?? null;
       },
@@ -63,19 +45,34 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = user.id as string;
         token.email = user.email ?? "";
+        token.role = (user as any).role;
       }
       return token;
     },
     async session({ session, token }) {
       if (token.id && token.email) {
-        session.user.id = token.id;
+        session.user = session.user ?? { id: "", email: "", role: "" };
+        session.user.id = token.id as string;
         session.user.email = token.email;
+        session.user.role = token.role as string;
       }
       return session;
     },
   },
-});
+};
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      email: string;
+      role: string;
+    };
+  }
+}
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

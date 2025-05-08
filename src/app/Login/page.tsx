@@ -30,7 +30,14 @@ const Login = () => {
     });
 
     if (res?.ok) {
-      router.push("./dashboard");
+      const sessionRes = await fetch("/api/auth/session");
+      const session = await sessionRes.json();
+
+      if (session?.user?.role === "admin") {
+        router.push("/admin-dashboard");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       alert("Login failed");
     }
