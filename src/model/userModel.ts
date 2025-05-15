@@ -14,6 +14,7 @@ interface UserDocument extends Document {
   gender?: string;
   dob?: string;
   phone?: string;
+  role?: "user" | "admin";
 }
 
 const addressSchema = new Schema(
@@ -29,6 +30,8 @@ const userSchema = new Schema<UserDocument>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+
     image: {
       type: String,
       default:

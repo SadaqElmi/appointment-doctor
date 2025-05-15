@@ -1,3 +1,4 @@
+//app/AdminDashboard/layout
 "use client";
 
 import { Toaster } from "react-hot-toast";

@@ -20,6 +20,7 @@ interface DoctorDocument extends Document {
   };
   date: number;
   slots_booked: Map<string, string>;
+  role?: string;
 }
 
 const addressSchema = new Schema(
@@ -38,6 +39,7 @@ const doctorSchema = new Schema<DoctorDocument>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, default: "doctor" },
     image: { type: String, required: true },
     specialization: { type: String, required: true },
     degree: { type: String, required: true },
