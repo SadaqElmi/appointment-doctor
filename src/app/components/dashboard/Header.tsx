@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +14,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { assets } from "@/mockdata/assets";
+
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 const HeaderDashboard = () => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.push("../../Login");
+  };
   return (
     <>
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
@@ -91,7 +101,9 @@ const HeaderDashboard = () => {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Log out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>
+                Log out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
