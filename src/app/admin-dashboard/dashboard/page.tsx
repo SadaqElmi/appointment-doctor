@@ -1,8 +1,23 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { assets_admin } from "@/mockdata/assentAdmin";
 import { assets } from "@/mockdata/assets";
 import Image from "next/image";
+import axios from "axios";
+
 const Dashboard_Admin = () => {
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("/api/getDoctors")
+      .then((res) => {
+        if (res.data.success) setDoctors(res.data.doctors);
+      })
+      .catch((err) => console.error("Failed to fetch doctors:", err));
+  }, []);
+
   return (
     <>
       <div className="grid auto-rows-min gap-4 md:grid-cols-3 mb-10">
@@ -16,7 +31,7 @@ const Dashboard_Admin = () => {
             />
           </div>
           <div className="flex items-start flex-col ">
-            <p className="text-[#515151] font-medium">14</p>
+            <p className="text-[#515151] font-medium">{doctors.length}</p>
             <p className="text-[#8893B0]">Doctors</p>
           </div>
         </div>
@@ -24,21 +39,22 @@ const Dashboard_Admin = () => {
           <div>
             <Image
               src={assets_admin.appointments_icon}
-              alt="Doctors"
+              alt="Appointments"
               priority
               className="h-16 w-16 bg-[#F6F8FF] rounded"
             />
           </div>
           <div className="flex items-start flex-col ">
             <p className="text-[#515151] font-medium">2</p>
-            <p className="text-[#8893B0]">Appointment</p>
+            <p className="text-[#8893B0]">Appointments</p>
           </div>
         </div>
+
         <div className="aspect-video rounded-xl bg-[#FFFFFF] shadow-md flex justify-center items-center gap-2">
           <div>
             <Image
               src={assets_admin.patients_icon}
-              alt="Doctors"
+              alt="Patients"
               priority
               className="h-16 w-16 bg-[#F6F8FF] rounded"
             />

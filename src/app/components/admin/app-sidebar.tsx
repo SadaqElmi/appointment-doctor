@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, Bot, SquareTerminal } from "lucide-react";
+import {
+  BriefcaseMedical,
+  LayoutDashboard,
+  List,
+  PlusCircle,
+  UserPlus,
+} from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import {
@@ -10,64 +16,46 @@ import {
   SidebarFooter,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { assets } from "@/mockdata/assets";
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: assets.profile_pic.src,
+const navItems = [
+  { title: "Dashboard", component: "dashboard", icon: LayoutDashboard },
+  { title: "Appointments", component: "appointments", icon: PlusCircle },
+  {
+    title: "Doctor Panel",
+    component: "doctorPanel",
+    icon: BriefcaseMedical,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      component: "dashboard",
-      icon: SquareTerminal,
-    },
-    {
-      title: "Appointments",
-      component: "appointments",
-      icon: Bot,
-    },
-    {
-      title: "Doctor Panel",
-      component: "doctorPanel",
-      icon: BookOpen,
-    },
-    {
-      title: "Add Doctor",
-      component: "addDoctor",
-      icon: BookOpen,
-    },
-    {
-      title: "Doctor Lists",
-      component: "doctorLists",
-      icon: BookOpen,
-    },
-  ],
-};
+  { title: "Add Doctor", component: "addDoctor", icon: UserPlus },
+  { title: "Doctor Lists", component: "doctorLists", icon: List },
+];
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onNavigate: (component: string, title: string) => void;
   activeComponent: string;
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }
 
 export function AppSidebar({
   onNavigate,
   activeComponent,
+  user,
   ...props
 }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
         <NavMain
-          items={data.navMain}
+          items={navItems}
           onNavigate={onNavigate}
           activeComponent={activeComponent}
         />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

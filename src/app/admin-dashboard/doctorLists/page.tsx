@@ -1,32 +1,59 @@
-import { doctors } from "@/mockdata/assets";
+"use client";
+
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+type Doctor = {
+  _id: string;
+  name: string;
+  image: string;
+  specialization: string;
+  available: boolean;
+};
 
 const DoctorLists = () => {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("/api/getDoctors")
+      .then((res) => {
+        if (res.data.success) setDoctors(res.data.doctors);
+      })
+      .catch((err) => console.error("Error loading doctors:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading)
+    return <div className="p-4 text-gray-600">Loading doctors...</div>;
+
   return (
     <div className="m-5 max-h-[90vh] overflow-y-scroll">
       <h1 className="text-lg font-medium">All Doctors</h1>
       <div className="w-full flex flex-wrap gap-4 pt-5 gap-y-6">
-        {doctors.map((item, index) => (
+        {doctors.map((item) => (
           <div
-            key={index}
+            key={item._id}
             className="border border-[#C9D8FF] rounded-xl max-w-56 overflow-hidden cursor-pointer group"
           >
             <Image
               src={item.image}
               className="w-full object-contain h-[222px] bg-[#EAEFFF]"
-              alt="Doctors"
+              alt="Doctor"
+              width={224}
+              height={222}
               priority
             />
             <div className="p-4">
               <p className="text-[#262626] text-lg font-medium">{item.name}</p>
               <p className="text-[#5C5C5C] text-sm font-light">
-                {item.speciality}
+                {item.specialization}
               </p>
               <div className="mt-2 flex items-center gap-1 text-sm">
-                <input type="checkbox" checked readOnly />
-
-                <p>Available</p>
+                <input type="checkbox" checked={item.available} readOnly />
+                <p>{item.available ? "Available" : "Unavailable"}</p>
               </div>
             </div>
           </div>

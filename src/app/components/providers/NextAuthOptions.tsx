@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
+          image: user.image,
         };
       },
     }),
@@ -40,15 +41,20 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60, // optional: session auto-refresh interval in seconds
+    maxAge: 60 * 60,
   },
 
   callbacks: {
     async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
         token.role = user.role;
+        token.image = user.image;
         token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
       }
+
       if (token.exp && Date.now() >= token.exp * 1000) {
         throw new Error("Session expired");
       }
@@ -58,8 +64,12 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }: { session: any; token: any }) {
       if (token) {
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
         session.user.role = token.role;
-        session.expires = new Date(token.exp * 1000).toISOString(); // optional
+        session.user.image = token.image;
+        session.expires = new Date(token.exp * 1000).toISOString();
       }
       return session;
     },

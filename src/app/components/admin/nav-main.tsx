@@ -9,6 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { LucideIcon } from "lucide-react";
+import Image from "next/image";
 
 export function NavMain({
   items,

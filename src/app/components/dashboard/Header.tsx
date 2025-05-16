@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,11 +15,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { assets } from "@/mockdata/assets";
 
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 const HeaderDashboard = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
+  console.log("User image:", session?.user?.image);
 
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("../../Login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") return null; // or a spinner
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.push("../../Login");
@@ -72,16 +81,12 @@ const HeaderDashboard = () => {
         </div>
 
         <div className="flex items-center space-x-4 cursor-pointer">
-          <Button className="bg-blue-500 text-white hover:bg-[#5F6FFF] px-4 py-4 rounded-full">
-            <Link href="../../singup">Create Account </Link>
-          </Button>
-
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center justify-center space-x-2 border-none outline-none focus:outline-none">
               <Avatar>
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
+                  src={session?.user?.image ?? undefined}
+                  alt="Profile"
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

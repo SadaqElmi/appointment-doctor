@@ -17,14 +17,30 @@ import {
 } from "@/components/ui/sidebar";
 import Dashboard_Admin from "./dashboard/page";
 import Appointments from "./appointments/page";
-import { useState } from "react";
 import DoctorPanel from "./doctorPanel/page";
 import AddDoctor from "./addDoctor/page";
 import DoctorLists from "./doctorLists/page";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [activeComponent, setActiveComponent] = useState("dashboard");
   const [activeTitle, setActiveTitle] = useState("Dashboard");
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/Login");
+    }
+
+    if (status === "authenticated" && session?.user?.role !== "admin") {
+      router.replace("/unauthorized");
+    }
+  }, [status, session, router]);
+
+  if (status === "loading") return null;
 
   const handleNavigate = (component: string, title: string) => {
     setActiveComponent(component);
@@ -36,6 +52,11 @@ export default function AdminDashboard() {
       <AppSidebar
         onNavigate={handleNavigate}
         activeComponent={activeComponent}
+        user={{
+          name: session?.user?.name || "No name",
+          email: session?.user?.email || "No email",
+          avatar: session?.user?.image || "No Image",
+        }}
       />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -57,7 +78,7 @@ export default function AdminDashboard() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex  flex-col gap-4 p-2 pt-0">
+        <div className="flex flex-col gap-4 p-2 pt-0">
           {activeComponent === "dashboard" && <Dashboard_Admin />}
           {activeComponent === "appointments" && <Appointments />}
           {activeComponent === "doctorPanel" && <DoctorPanel />}

@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { doctors, specialityData } from "@/mockdata/assets";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const specialities = [
   "All",
@@ -16,10 +16,17 @@ const specialities = [
   "Gastroenterologist",
 ];
 
+type Doctor = {
+  _id: string;
+  name: string;
+  image: string;
+  specialization: string;
+};
+
 const Doctors = () => {
   const [selectedSpecialist, setSelectedSpecialist] = useState("All");
   const [showFilters, setShowFilters] = useState(false);
-
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const router = useRouter();
   const { speciality } = useParams();
 
@@ -31,10 +38,19 @@ const Doctors = () => {
     setSelectedSpecialist(decodedSpeciality);
   }, [decodedSpeciality]);
 
+  useEffect(() => {
+    axios
+      .get("/api/getDoctors")
+      .then((res) => {
+        if (res.data.success) setDoctors(res.data.doctors);
+      })
+      .catch((err) => console.error("Failed to fetch doctors:", err));
+  }, []);
+
   const filteredDoctors =
     selectedSpecialist === "All"
       ? doctors
-      : doctors.filter((doc) => doc.speciality === selectedSpecialist);
+      : doctors.filter((doc) => doc.specialization === selectedSpecialist);
 
   return (
     <div>
@@ -70,9 +86,9 @@ const Doctors = () => {
         </div>
 
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-6">
-          {filteredDoctors.map((item, index) => (
+          {filteredDoctors.map((item) => (
             <div
-              key={index}
+              key={item._id}
               onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
@@ -93,7 +109,7 @@ const Doctors = () => {
                   {item.name}
                 </p>
                 <p className="text-[#5C5C5C] text-sm font-light">
-                  {item.speciality}
+                  {item.specialization}
                 </p>
               </div>
             </div>

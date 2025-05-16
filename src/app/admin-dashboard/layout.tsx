@@ -3,6 +3,7 @@
 
 import { Toaster } from "react-hot-toast";
 import "../globals.css";
+import { SessionProvider } from "next-auth/react";
 
 export default function DashboardLayout({
   children,
@@ -10,9 +11,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section>
-      {children}
-      <Toaster />
-    </section>
+    <SessionProvider>
+      <section>
+        {children}
+        <Toaster />
+      </section>
+    </SessionProvider>
   );
 }

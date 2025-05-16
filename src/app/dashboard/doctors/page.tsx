@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { doctors } from "@/mockdata/assets";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const specialities = [
   "All",
@@ -16,15 +16,41 @@ const specialities = [
   "Gastroenterologist",
 ];
 
+type Doctor = {
+  _id: string;
+  name: string;
+  image: string;
+  specialization: string;
+};
+
 const Doctors = () => {
   const [selectedSpecialist, setSelectedSpecialist] = useState("All");
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const router = useRouter();
+  const { speciality } = useParams();
+
+  const decodedSpeciality = decodeURIComponent(
+    Array.isArray(speciality) ? speciality[0] : speciality || "All"
+  );
+
+  useEffect(() => {
+    setSelectedSpecialist(decodedSpeciality);
+  }, [decodedSpeciality]);
+
+  useEffect(() => {
+    axios
+      .get("/api/getDoctors")
+      .then((res) => {
+        if (res.data.success) setDoctors(res.data.doctors);
+      })
+      .catch((err) => console.error("Failed to fetch doctors:", err));
+  }, []);
 
   const filteredDoctors =
     selectedSpecialist === "All"
       ? doctors
-      : doctors.filter((doc) => doc.speciality === selectedSpecialist);
+      : doctors.filter((doc) => doc.specialization === selectedSpecialist);
 
   return (
     <div>
@@ -46,7 +72,10 @@ const Doctors = () => {
           {specialities.map((spec) => (
             <p
               key={spec}
-              onClick={() => setSelectedSpecialist(spec)}
+              onClick={() => {
+                setSelectedSpecialist(spec);
+                router.push(`/dashboard/doctors/${encodeURIComponent(spec)}`);
+              }}
               className={`w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${
                 selectedSpecialist === spec ? "bg-blue-100 font-medium" : ""
               }`}
@@ -57,24 +86,22 @@ const Doctors = () => {
         </div>
 
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 gap-y-6">
-          {filteredDoctors.map((item, index) => (
+          {filteredDoctors.map((item) => (
             <div
-              key={index}
-              onClick={() =>
-                router.push(`../../dashboard/appointment/${item._id}`)
-              }
+              key={item._id}
+              onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image
                 src={item.image}
                 className="w-full object-contain h-[222px] bg-[#EAEFFF]"
                 alt="Doctor"
-                priority
                 width={252}
                 height={222}
+                priority
               />
               <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-center text-green-500">
+                <div className="flex items-center gap-2 text-sm text-green-500">
                   <p className="w-2 h-2 rounded-full bg-green-500"></p>
                   <p>Available</p>
                 </div>
@@ -82,7 +109,7 @@ const Doctors = () => {
                   {item.name}
                 </p>
                 <p className="text-[#5C5C5C] text-sm font-light">
-                  {item.speciality}
+                  {item.specialization}
                 </p>
               </div>
             </div>

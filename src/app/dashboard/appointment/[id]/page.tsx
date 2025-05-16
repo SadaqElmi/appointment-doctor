@@ -1,19 +1,54 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { doctors } from "@/mockdata/assets";
 import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios";
 import { assets } from "@/mockdata/assets";
 import toast from "react-hot-toast";
+
+type Doctor = {
+  _id: string;
+  name: string;
+  image: string;
+  specialization: string;
+  degree: string;
+  experience: string;
+  about: string;
+  fees: number;
+  address: {
+    street?: string;
+    city?: string;
+  };
+};
 
 const AppointmentDoctor = () => {
   const { id } = useParams();
   const router = useRouter();
+
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
-  // Generate dates for the next 7 days
+  const doctor = doctors.find((doc) => doc._id === id);
+  const relatedDoctors = doctors.filter(
+    (doc) =>
+      doc.specialization === doctor?.specialization && doc._id !== doctor._id
+  );
+
+  useEffect(() => {
+    axios
+      .get("/api/getDoctors")
+      .then((res) => {
+        if (res.data.success) {
+          setDoctors(res.data.doctors);
+        }
+      })
+      .catch((err) => console.error("Error fetching doctors", err))
+      .finally(() => setLoading(false));
+  }, []);
+
   const dates = useMemo(() => {
     return Array.from({ length: 7 }, (_, i) => {
       const date = new Date();
@@ -28,7 +63,6 @@ const AppointmentDoctor = () => {
     });
   }, []);
 
-  // Available time slots
   const timeSlots = useMemo(
     () => [
       "10:30 am",
@@ -42,21 +76,9 @@ const AppointmentDoctor = () => {
     []
   );
 
-  const doctor = doctors.find((doc) => doc._id === id);
-  const relatedDoctors = doctors.filter(
-    (item) => item.speciality === doctor?.speciality && item._id !== doctor?._id
-  );
-
   const handleBookAppointment = () => {
-    if (!selectedDate) {
-      toast.error("Please select a date first");
-      return;
-    }
-    if (!selectedTime) {
-      toast.error("Please select a time slot");
-      return;
-    }
-
+    if (!selectedDate) return toast.error("Please select a date");
+    if (!selectedTime) return toast.error("Please select a time slot");
     if (!doctor) return;
 
     const appointment = {
@@ -65,7 +87,7 @@ const AppointmentDoctor = () => {
       date: selectedDate,
       time: selectedTime,
       address: doctor.address,
-      speciality: doctor.speciality,
+      specialization: doctor.specialization,
       timestamp: new Date().toISOString(),
     };
 
@@ -85,6 +107,7 @@ const AppointmentDoctor = () => {
     }
   };
 
+  if (loading) return <p>Loading...</p>;
   if (!doctor) return <p>Doctor not found</p>;
 
   return (
@@ -99,14 +122,14 @@ const AppointmentDoctor = () => {
             height={280}
           />
         </div>
-        <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 ">
+        <div className="flex-1 border border-[#ADADAD] rounded-lg p-8 py-7 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
           <p className="flex items-center gap-2 text-3xl font-medium text-gray-700">
             {doctor.name}
             <Image src={assets.verified_icon} className="w-5" alt="verified" />
           </p>
           <div className="flex items-center gap-2 mt-1 text-gray-600">
             <p>
-              {doctor.degree} - {doctor.speciality}
+              {doctor.degree} - {doctor.specialization}
             </p>
             <button className="py-0.5 px-2 border text-xs rounded-full">
               {doctor.experience} Years
@@ -134,9 +157,9 @@ const AppointmentDoctor = () => {
               key={d.date}
               onClick={() => {
                 setSelectedDate(d.date);
-                setSelectedTime(null); // Reset time when date changes
+                setSelectedTime(null);
               }}
-              className={`text-center  p-4 min-w-16 rounded-full cursor-pointer border transition-colors ${
+              className={`text-center p-4 min-w-16 rounded-full cursor-pointer border transition-colors ${
                 selectedDate === d.date
                   ? "bg-[#5f6fff] text-white border-[#5f6fff]"
                   : "border-[#5f6fff] hover:border-[#5f6fff]/50"
@@ -148,7 +171,7 @@ const AppointmentDoctor = () => {
           ))}
         </div>
         {selectedDate && (
-          <div className="mt-6 transition-all duration-300 ease-in-out opacity-100">
+          <div className="mt-6">
             <div className="flex gap-3 flex-wrap">
               {timeSlots.map((time) => (
                 <button
@@ -187,9 +210,7 @@ const AppointmentDoctor = () => {
           {relatedDoctors.map((item) => (
             <div
               key={item._id}
-              onClick={() =>
-                router.push(`../../dashboard/appointment/${item._id}`)
-              }
+              onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image
@@ -209,7 +230,7 @@ const AppointmentDoctor = () => {
                   {item.name}
                 </p>
                 <p className="text-[#5C5C5C] text-sm font-light">
-                  {item.speciality}
+                  {item.specialization}
                 </p>
               </div>
             </div>
