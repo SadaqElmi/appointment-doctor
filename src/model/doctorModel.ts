@@ -14,9 +14,6 @@ interface DoctorDocument extends Document {
   address: {
     street?: string;
     city?: string;
-    state?: string;
-    country?: string;
-    zipCode?: string;
   };
   date: number;
   slots_booked: Map<string, string>;

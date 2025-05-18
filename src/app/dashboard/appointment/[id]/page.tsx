@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { assets } from "@/mockdata/assets";
 import toast from "react-hot-toast";
 
@@ -25,6 +26,8 @@ type Doctor = {
 const AppointmentDoctor = () => {
   const { id } = useParams();
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const currentUser = session?.user;
 
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,39 +79,52 @@ const AppointmentDoctor = () => {
     []
   );
 
-  const handleBookAppointment = () => {
+  const handleBookAppointment = async () => {
     if (!selectedDate) return toast.error("Please select a date");
     if (!selectedTime) return toast.error("Please select a time slot");
     if (!doctor) return;
+    if (!currentUser || !currentUser.id)
+      return toast.error("You must be logged in");
 
     const appointment = {
-      doctorId: doctor._id,
-      doctorName: doctor.name,
-      date: selectedDate,
-      time: selectedTime,
-      address: doctor.address,
-      specialization: doctor.specialization,
-      timestamp: new Date().toISOString(),
+      userId: currentUser.id,
+      docId: doctor._id,
+      slotDate: selectedDate,
+      slotTime: selectedTime,
+      userData: {
+        name: currentUser.name,
+        email: currentUser.email,
+      },
+      docData: {
+        name: doctor.name,
+        specialization: doctor.specialization,
+      },
+      amount: doctor.fees,
+      date: Date.now(),
+      cancelled: 0,
+      payment: false,
+      isCompleted: false,
     };
 
     try {
-      const existingAppointments = JSON.parse(
-        localStorage.getItem("appointments") || "[]"
-      );
-      const updatedAppointments = [...existingAppointments, appointment];
-      localStorage.setItem("appointments", JSON.stringify(updatedAppointments));
-      toast.success("Appointment booked successfully!");
-      setSelectedDate("");
-      setSelectedTime(null);
-      router.push("/dashboard/my-appointments");
-    } catch (error) {
-      console.error("Failed to save appointment:", error);
-      toast.error("Failed to book appointment. Please try again.");
+      const res = await axios.post("/api/bookAppointment", appointment);
+      if (res.data.success) {
+        toast.success("Appointment booked successfully!");
+        setSelectedDate("");
+        setSelectedTime(null);
+        router.push("/dashboard/my-appointments");
+      } else {
+        toast.error("Failed to book appointment");
+      }
+    } catch (err) {
+      console.error("Booking failed:", err);
+      toast.error("Something went wrong");
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading || status === "loading") return <p>Loading...</p>;
   if (!doctor) return <p>Doctor not found</p>;
+  if (!session) return <p>Please log in to book an appointment.</p>;
 
   return (
     <div>
