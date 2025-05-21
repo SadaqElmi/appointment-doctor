@@ -55,14 +55,12 @@ const MyAppointments = () => {
               <p>{appointment.docId?.specialization}</p>
               <p className="mt-1">
                 <span className="font-medium text-[#3C3C3C]">Address:</span>
-
-                {[
-                  <br />,
-                  appointment.docId?.address?.street,
-                  <br />,
-                  appointment.docId?.address?.city,
-                ]}
+                <br />
+                {appointment.docId?.address?.street}
+                <br />
+                {appointment.docId?.address?.city}
               </p>
+
               <p className="mt-1">
                 <span className="font-medium text-[#3C3C3C]">Date & Time:</span>
                 {appointment.slotDate} | {appointment.slotTime}
