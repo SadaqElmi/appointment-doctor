@@ -1,9 +1,11 @@
 "use client";
 import { assets } from "@/mockdata/assets";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
 
 const Profile = () => {
+  const { data: session, status } = useSession();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     phone: "0619316187",
@@ -37,10 +39,11 @@ const Profile = () => {
       <div className="relative w-36">
         <Image
           className="rounded w-36 h-36 object-cover border border-gray-300"
-          src={profile.image}
+          src={session?.user?.image || ""}
           alt="Profile"
           width={144}
           height={144}
+          priority
         />
         {isEditing && (
           <div className="absolute bottom-0 left-0 bg-black/50 w-full text-center text-xs py-1 rounded-b">
