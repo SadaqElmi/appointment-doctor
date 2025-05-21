@@ -1,37 +1,60 @@
 "use client";
-import { assets } from "@/mockdata/assets";
+
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    phone: "0619316187",
-    address: "Somalia\nMogadishu",
-    gender: "Male",
-    birthday: "2003-01-01",
-    image: assets.profile_pic,
+
+  const user = session?.user as any;
+
+  const [form, setForm] = useState({
+    id: user?.id || "",
+    phone: user?.phone || "",
+    gender: user?.gender || "",
+    dob: user?.dob || "",
+    address1: user?.address?.line1 || "",
+    address2: user?.address?.line2 || "",
+    imageFile: null as File | null,
+    previewImage: user?.image || "",
   });
 
-  const handleChange = (field: string, value: string) => {
-    setProfile({ ...profile, [field]: value });
+  const handleChange = (field: string, value: string | File | null) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleChange("image", reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      handleChange("imageFile", file);
+      const previewUrl = URL.createObjectURL(file);
+      handleChange("previewImage", previewUrl);
+    }
+  };
+
+  const handleSave = async () => {
+    const data = new FormData();
+    Object.entries(form).forEach(([key, value]) => {
+      if (value) data.append(key, value);
+    });
+
+    const res = await axios.put("/api/profile", data);
+
+    if (res?.status === 200) {
+      toast.success("Profile updated!");
+      setIsEditing(false);
+    } else {
+      toast.error(res?.data?.message || "Update failed");
     }
   };
 
   const toggleEdit = () => {
-    setIsEditing((prev) => !prev);
+    if (isEditing) handleSave();
+    else setIsEditing(true);
   };
 
   return (
@@ -39,18 +62,21 @@ const Profile = () => {
       <div className="relative w-36">
         <Image
           className="rounded w-36 h-36 object-cover border border-gray-300"
-          src={session?.user?.image || ""}
+          src={
+            form.previewImage || session?.user?.image || "/default-profile.png"
+          }
           alt="Profile"
           width={144}
           height={144}
           priority
         />
+
         {isEditing && (
           <div className="absolute bottom-0 left-0 bg-black/50 w-full text-center text-xs py-1 rounded-b">
             <label className="cursor-pointer text-blue-600 hover:underline flex items-center justify-center gap-1">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white"
+                className="h-6 w-6 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -79,35 +105,47 @@ const Profile = () => {
         )}
       </div>
 
-      <p className="font-medium text-3xl text-[#262626] mt-4">SadaqElmi</p>
+      <p className="font-medium text-3xl text-[#262626] mt-4">{user?.name}</p>
       <hr className="bg-[#ADADAD] h-[1px] border-none" />
 
       <div>
         <p className="text-gray-600 underline mt-3">CONTACT INFORMATION</p>
         <div className="grid grid-cols-[1fr_3fr] gap-y-2.5 mt-3 text-[#363636]">
-          <p>Email id:</p>
-          <p className="text-[#5F6FFF]">sadaq@gmail.com</p>
+          <p>Email:</p>
+          <p className="text-[#5F6FFF]">{user?.email}</p>
 
           <p>Phone:</p>
           {isEditing ? (
             <input
               className="border px-2 py-1 rounded"
-              value={profile.phone}
+              value={form.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
             />
           ) : (
-            <p className="text-[#5F6FFF]">{profile.phone}</p>
+            <p className="text-[#5F6FFF]">{form.phone}</p>
           )}
 
           <p>Address:</p>
           {isEditing ? (
-            <textarea
-              className="border px-2 py-1 rounded"
-              value={profile.address}
-              onChange={(e) => handleChange("address", e.target.value)}
-            />
+            <div className="flex flex-col gap-1">
+              <input
+                className="border px-2 py-1 rounded"
+                placeholder="Line 1"
+                value={form.address1}
+                onChange={(e) => handleChange("address1", e.target.value)}
+              />
+              <input
+                className="border px-2 py-1 rounded"
+                placeholder="Line 2"
+                value={form.address2}
+                onChange={(e) => handleChange("address2", e.target.value)}
+              />
+            </div>
           ) : (
-            <p>{profile.address}</p>
+            <p>
+              {form.address1}
+              {form.address2 ? `, ${form.address2}` : ""}
+            </p>
           )}
         </div>
       </div>
@@ -119,7 +157,7 @@ const Profile = () => {
           {isEditing ? (
             <select
               className="border px-2 py-1 rounded"
-              value={profile.gender}
+              value={form.gender}
               onChange={(e) => handleChange("gender", e.target.value)}
             >
               <option value="">Select</option>
@@ -127,7 +165,7 @@ const Profile = () => {
               <option value="Female">Female</option>
             </select>
           ) : (
-            <p>{profile.gender}</p>
+            <p>{form.gender}</p>
           )}
 
           <p>Birthday:</p>
@@ -135,11 +173,11 @@ const Profile = () => {
             <input
               type="date"
               className="border px-2 py-1 rounded"
-              value={profile.birthday}
-              onChange={(e) => handleChange("birthday", e.target.value)}
+              value={form.dob}
+              onChange={(e) => handleChange("dob", e.target.value)}
             />
           ) : (
-            <p>{profile.birthday}</p>
+            <p>{form.dob}</p>
           )}
         </div>
       </div>

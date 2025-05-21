@@ -34,6 +34,10 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           role: user.role,
           image: user.image,
+          phone: user.phone,
+          gender: user.gender,
+          dob: user.dob,
+          address: user.address,
         };
       },
     }),
@@ -52,6 +56,10 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.role = user.role;
         token.image = user.image;
+        token.phone = user.phone;
+        token.gender = user.gender;
+        token.dob = user.dob;
+        token.address = user.address;
         token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
       }
 
@@ -69,6 +77,10 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.role = token.role;
         session.user.image = token.image;
+        session.user.phone = token.phone;
+        session.user.gender = token.gender;
+        session.user.dob = token.dob;
+        session.user.address = token.address;
         session.expires = new Date(token.exp * 1000).toISOString();
       }
       return session;
