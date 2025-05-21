@@ -36,7 +36,7 @@ import General_physician from "../../public/assets_frontend/General_physician.sv
 import Gynecologist from "../../public/assets_frontend/Gynecologist.svg";
 import Neurologist from "../../public/assets_frontend/Neurologist.svg";
 import Pediatricians from "../../public/assets_frontend/Pediatricians.svg";
-
+import LoginBg from "../../public/assets_frontend/LoginBg.png";
 export const assets = {
   appointment_img,
   header_img,
@@ -55,6 +55,7 @@ export const assets = {
   upload_icon,
   stripe_logo,
   razorpay_logo,
+  LoginBg,
 };
 
 export const specialityData = [
