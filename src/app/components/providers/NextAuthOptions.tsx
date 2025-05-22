@@ -49,7 +49,21 @@ export const authOptions: NextAuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({
+      token,
+      user,
+
+      trigger,
+
+      session,
+    }: {
+      token: any;
+      user?: any;
+
+      trigger?: "signIn" | "update" | "signUp";
+
+      session?: any;
+    }) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -66,7 +80,13 @@ export const authOptions: NextAuthOptions = {
       if (token.exp && Date.now() >= token.exp * 1000) {
         throw new Error("Session expired");
       }
-
+      if (trigger === "update" && session) {
+        token.phone = session.phone;
+        token.gender = session.gender;
+        token.dob = session.dob;
+        token.address = session.address;
+        token.image = session.image;
+      }
       return token;
     },
 
@@ -82,6 +102,14 @@ export const authOptions: NextAuthOptions = {
         session.user.dob = token.dob;
         session.user.address = token.address;
         session.expires = new Date(token.exp * 1000).toISOString();
+      }
+      const freshUser = await User.findById(token.id);
+      if (freshUser) {
+        session.user.phone = freshUser.phone;
+        session.user.gender = freshUser.gender;
+        session.user.dob = freshUser.dob;
+        session.user.address = freshUser.address;
+        session.user.image = freshUser.image;
       }
       return session;
     },

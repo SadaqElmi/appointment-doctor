@@ -7,7 +7,7 @@ import React, { useState, ChangeEvent } from "react";
 import toast from "react-hot-toast";
 
 const Profile = () => {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const [isEditing, setIsEditing] = useState(false);
 
   const user = session?.user as any;
@@ -46,6 +46,7 @@ const Profile = () => {
 
     if (res?.status === 200) {
       toast.success("Profile updated!");
+      await update();
       setIsEditing(false);
     } else {
       toast.error(res?.data?.message || "Update failed");
@@ -62,9 +63,7 @@ const Profile = () => {
       <div className="relative w-36">
         <Image
           className="rounded w-36 h-36 object-cover border border-gray-300"
-          src={
-            form.previewImage || session?.user?.image || "/default-profile.png"
-          }
+          src={form.previewImage || session?.user?.image || "/profile_pic.png"}
           alt="Profile"
           width={144}
           height={144}
