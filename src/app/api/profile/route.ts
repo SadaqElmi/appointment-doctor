@@ -23,8 +23,23 @@ export async function PUT(req: NextRequest) {
       );
     }
 
-    let imageUrl: string | undefined;
+    // Calculate age from dob
+    function calculateAgeFromDob(dobStr: string): number | undefined {
+      const dob = new Date(dobStr);
+      if (isNaN(dob.getTime())) return undefined;
 
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      return age;
+    }
+
+    const age = calculateAgeFromDob(dob);
+
+    let imageUrl: string | undefined;
     if (image) {
       const buffer = Buffer.from(await image.arrayBuffer());
       imageUrl = await new Promise((resolve, reject) => {
@@ -43,6 +58,7 @@ export async function PUT(req: NextRequest) {
       phone,
       gender,
       dob,
+      age,
       address: { line1, line2 },
     };
 

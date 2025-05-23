@@ -85,6 +85,7 @@ const HeaderDashboard = () => {
             <DropdownMenuTrigger className="flex items-center justify-center space-x-2 border-none outline-none focus:outline-none">
               <Avatar>
                 <AvatarImage
+                  className="object-cover"
                   src={session?.user?.image ?? undefined}
                   alt="Profile"
                 />

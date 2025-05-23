@@ -23,6 +23,19 @@ const Profile = () => {
     previewImage: user?.image || "",
   });
 
+  const calculateAge = (dob: string) => {
+    if (!dob) return "";
+    const birthDate = new Date(dob);
+    if (isNaN(birthDate.getTime())) return "";
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return isNaN(age) ? "" : age.toString();
+  };
+
   const handleChange = (field: string, value: string | File | null) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -39,7 +52,9 @@ const Profile = () => {
   const handleSave = async () => {
     const data = new FormData();
     Object.entries(form).forEach(([key, value]) => {
-      if (value) data.append(key, value);
+      if (value !== null && value !== undefined) {
+        data.append(key, value);
+      }
     });
 
     const res = await axios.put("/api/profile", data);
@@ -178,6 +193,9 @@ const Profile = () => {
           ) : (
             <p>{form.dob}</p>
           )}
+
+          <p>Age:</p>
+          <p>{calculateAge(form.dob)}</p>
         </div>
       </div>
 

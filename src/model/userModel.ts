@@ -12,6 +12,7 @@ interface UserDocument extends Document {
     line2?: string;
   };
   gender?: string;
+  age?: number;
   dob?: string;
   phone?: string;
   role?: "user" | "admin";
@@ -39,6 +40,7 @@ const userSchema = new Schema<UserDocument>(
     },
     address: { type: addressSchema, default: () => ({}) },
     gender: { type: String, default: "Not Selected" },
+    age: { type: Number, default: 0 },
     dob: { type: String, default: "Not Selected" },
     phone: { type: String, default: "000000000" },
   },
