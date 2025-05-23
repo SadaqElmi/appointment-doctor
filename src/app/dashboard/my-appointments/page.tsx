@@ -123,12 +123,7 @@ const MyAppointments = () => {
                 <button className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300">
                   Pay Online
                 </button>
-                {/*<button
-                  onClick={() => cancelAppointment(appointment._id)}
-                  className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300"
-                >
-                  Cancel appointment
-                </button>*/}
+
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button

@@ -8,7 +8,10 @@ import axios from "axios";
 
 const Dashboard_Admin = () => {
   const [doctors, setDoctors] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
 
+  // Fetch Doctors
   useEffect(() => {
     axios
       .get("/api/getDoctors")
@@ -18,9 +21,35 @@ const Dashboard_Admin = () => {
       .catch((err) => console.error("Failed to fetch doctors:", err));
   }, []);
 
+  // Fetch Appointments
+  useEffect(() => {
+    axios
+      .get("/api/getAppointments")
+      .then((res) => {
+        if (res.data.success) setAppointments(res.data.appointments);
+      })
+      .catch((err) => console.error("Failed to fetch appointments:", err));
+  }, []);
+
+  // Fetch Users with role 'user' = Patients
+  useEffect(() => {
+    axios
+      .get("/api/getUsers")
+      .then((res) => {
+        if (res.data.success) {
+          const patientUsers = res.data.users.filter(
+            (user: any) => user.role === "user"
+          );
+          setPatients(patientUsers);
+        }
+      })
+      .catch((err) => console.error("Failed to fetch users:", err));
+  }, []);
+
   return (
     <>
       <div className="grid auto-rows-min gap-4 md:grid-cols-3 mb-10">
+        {/* Doctors */}
         <div className="aspect-video rounded-xl bg-[#FFFFFF] shadow-md flex justify-center items-center gap-2">
           <div>
             <Image
@@ -35,6 +64,8 @@ const Dashboard_Admin = () => {
             <p className="text-[#8893B0]">Doctors</p>
           </div>
         </div>
+
+        {/* Appointments */}
         <div className="aspect-video rounded-xl bg-[#FFFFFF] shadow-md flex justify-center items-center gap-2">
           <div>
             <Image
@@ -45,11 +76,12 @@ const Dashboard_Admin = () => {
             />
           </div>
           <div className="flex items-start flex-col ">
-            <p className="text-[#515151] font-medium">2</p>
+            <p className="text-[#515151] font-medium">{appointments.length}</p>
             <p className="text-[#8893B0]">Appointments</p>
           </div>
         </div>
 
+        {/* Patients */}
         <div className="aspect-video rounded-xl bg-[#FFFFFF] shadow-md flex justify-center items-center gap-2">
           <div>
             <Image
@@ -60,7 +92,7 @@ const Dashboard_Admin = () => {
             />
           </div>
           <div className="flex items-start flex-col ">
-            <p className="text-[#515151] font-medium">5</p>
+            <p className="text-[#515151] font-medium">{patients.length}</p>
             <p className="text-[#8893B0]">Patients</p>
           </div>
         </div>
