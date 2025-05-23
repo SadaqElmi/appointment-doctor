@@ -1,7 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { assets_admin } from "@/mockdata/assentAdmin";
 import { assets } from "@/mockdata/assets";
 import {
   Table,
@@ -11,33 +12,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const appointments = [
-  {
-    id: 1,
-    patientName: "Richard James",
-    patientImg: assets.profile_pic, // replace with correct path
-    department: "Richard James",
-    age: 28,
-    dateTime: "24th July, 2024, 10:AM",
-    doctorName: "Dr. Richard James",
-    doctorImg: assets.profile_pic, // replace with correct path
-    fees: "$50",
-  },
-  {
-    id: 2,
-    patientName: "Richard James",
-    patientImg: assets.profile_pic,
-    department: "Richard James",
-    age: 28,
-    dateTime: "24th July, 2024, 10:AM",
-    doctorName: "Dr. Richard James",
-    doctorImg: assets.profile_pic,
-    fees: "$50",
-  },
-];
+type Appointment = {
+  _id: string;
+  userId?: {
+    image?: string;
+    name?: string;
+    age?: number;
+  };
+  docId?: {
+    image?: string;
+    name?: string;
+    department?: string;
+  };
+  slotDate?: string;
+  amount?: number;
+};
 
 const Appointments = () => {
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+
+  // Fetch Appointments
+  useEffect(() => {
+    axios
+      .get("/api/getAppointments")
+      .then((res) => {
+        if (res.data.success) setAppointments(res.data.appointments);
+      })
+      .catch((err) => console.error("Failed to fetch appointments:", err));
+  }, []);
+
+  // Delete Appointment
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await axios.delete(`/api/deleteAppointment/${id}`);
+      if (res.data.success) {
+        setAppointments((prev) => prev.filter((a) => a._id !== id));
+        toast.success("Appointment deleted successfully");
+      } else {
+        toast.error("Failed to delete appointment");
+        console.error("Failed to delete appointment:", res.data.message);
+      }
+    } catch (err) {
+      console.error("Error deleting appointment:", err);
+      toast.error("Failed to delete appointment");
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="font-semibold text-xl mb-4">All Appointments</h1>
@@ -56,42 +79,56 @@ const Appointments = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {appointments.map((app, index) => (
-              <TableRow key={app.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell className="flex items-center gap-2">
-                  <Image
-                    src={app.patientImg}
-                    alt="patient"
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                    priority
-                  />
-                  {app.patientName}
-                </TableCell>
-                <TableCell>{app.department}</TableCell>
-                <TableCell>{app.age}</TableCell>
-                <TableCell>{app.dateTime}</TableCell>
-                <TableCell className="flex items-center gap-2">
-                  <Image
-                    src={app.doctorImg}
-                    alt="doctor"
-                    width={30}
-                    height={30}
-                    className="rounded-full"
-                    priority
-                  />
-                  {app.doctorName}
-                </TableCell>
-                <TableCell>{app.fees}</TableCell>
-                <TableCell>
-                  <button className="bg-red-100 text-red-600 hover:bg-red-200 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold ">
-                    <X size={14} />
-                  </button>
+            {appointments.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  className="text-center text-gray-400 py-6"
+                >
+                  No appointments found.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              appointments.map((appointment: any, index) => (
+                <TableRow key={appointment._id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell className="flex items-center gap-2">
+                    <Image
+                      src={appointment.userId?.image || assets.profile_pic}
+                      alt="patient"
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                      priority
+                    />
+                    {appointment.userId?.name || "Unknown Patient"}
+                  </TableCell>
+                  <TableCell>{appointment.docId?.department}</TableCell>
+                  <TableCell>{appointment.userId?.age}</TableCell>
+                  <TableCell>{appointment.slotDate}</TableCell>
+                  <TableCell className="flex items-center gap-2">
+                    <Image
+                      src={appointment.docId?.image || assets.profile_pic}
+                      alt="doctor"
+                      width={30}
+                      height={30}
+                      className="rounded-full"
+                      priority
+                    />
+                    {appointment.docId?.name || "Unknown Doctor"}
+                  </TableCell>
+                  <TableCell>${appointment.amount}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => handleDelete(appointment._id)}
+                      className="bg-red-100 text-red-600 hover:bg-red-200 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold"
+                    >
+                      <X size={14} />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
