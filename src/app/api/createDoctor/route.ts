@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Doctor from "@/model/doctorModel";
 import cloudinary from "@/lib/cloudinary";
+
 const cloudinaryV2 = cloudinary.v2;
 
 export async function POST(req: Request) {
@@ -32,6 +33,7 @@ export async function POST(req: Request) {
       about: formData.get("about"),
       available: true,
       fees: formData.get("fees"),
+      department: formData.get("department"),
       address: {
         street: formData.get("address1"),
         city: formData.get("address2"),

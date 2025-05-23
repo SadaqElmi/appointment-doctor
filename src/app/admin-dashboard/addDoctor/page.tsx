@@ -8,6 +8,7 @@ import { assets } from "@/mockdata/assets";
 const AddDoctor = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
   const [formValues, setFormValues] = useState({
     name: "",
     email: "",
@@ -19,6 +20,7 @@ const AddDoctor = () => {
     address1: "",
     address2: "",
     about: "",
+    department: "General", // ✅ Added
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,7 +44,6 @@ const AddDoctor = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const formData = new FormData();
       if (imageFile) formData.append("image", imageFile);
@@ -51,7 +52,7 @@ const AddDoctor = () => {
         formData.append(key, value);
       });
 
-      const res = await axios.post("/api/createDoctor", formData, {
+      await axios.post("/api/createDoctor", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -148,6 +149,24 @@ const AddDoctor = () => {
                 <option>Gastroenterologist</option>
               </select>
             </div>
+
+            <div className="flex flex-col gap-1">
+              <p>Department</p>
+              <select
+                name="department"
+                value={formValues.department}
+                onChange={handleChange}
+                className="border rounded px-2 py-2"
+              >
+                <option value="General">General</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Psychiatry">Psychiatry</option>
+                <option value="ENT">ENT</option>
+                <option value="Radiology">Radiology</option>
+              </select>
+            </div>
+
             <InputField
               label="Degree"
               name="degree"
@@ -192,7 +211,7 @@ const AddDoctor = () => {
   );
 };
 
-// Reusable input field component
+// Reusable input field
 const InputField = ({
   label,
   name,
