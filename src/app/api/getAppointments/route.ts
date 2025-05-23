@@ -6,7 +6,11 @@ export async function GET() {
   try {
     await connectDB();
 
-    const appointments = await appointmentModel.find().lean();
+    const appointments = await appointmentModel
+      .find()
+      .populate("docId") // gets full doctor info
+      .populate("userId") // gets full user info
+      .lean();
 
     return NextResponse.json({ success: true, appointments });
   } catch (error: any) {

@@ -11,6 +11,7 @@ interface DoctorDocument extends Document {
   about: string;
   available: boolean;
   fees: number;
+  department?: string; // ✅ new field
   address: {
     street?: string;
     city?: string;
@@ -47,6 +48,7 @@ const doctorSchema = new Schema<DoctorDocument>(
     address: { type: addressSchema, required: true },
     date: { type: Number, required: true },
     slots_booked: { type: Map, of: String, default: {} },
+    department: { type: String, default: "General" },
   },
   { minimize: false }
 );

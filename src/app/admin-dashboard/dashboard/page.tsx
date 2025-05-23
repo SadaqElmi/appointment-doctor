@@ -97,114 +97,58 @@ const Dashboard_Admin = () => {
           </div>
         </div>
       </div>
+
+      {/* Latest Appointment */}
       <div className="min-h-[100vh] flex-1 rounded-xl bg-[#FFFFFF] md:min-h-min border border-[#E6E8F0] shadow-md ">
-        <div className="px-5 py-3 flex gap-2 ">
+        <div className="px-5 py-3 flex gap-2 items-center">
           <Image
             src={assets_admin.list_icon}
             alt="list_icon"
-            className="h-6 w-6  rounded"
+            className="h-6 w-6 rounded"
           />
-          <p className="font-medium text-[18px]">Latest Appointment</p>
+          <p className="font-medium text-[18px]">Latest Appointments</p>
         </div>
         <hr className="mt-1" />
-        <div className="flex flex-col gap-2 my-4">
-          <div className="flex items-center justify-between px-5 py-3">
-            <div className="flex items-center gap-2">
-              <Image
-                src={assets.profile_pic}
-                alt="appointments_icon"
-                className="h-[52px] w-[52px]  rounded-full"
-              />
-              <div className="flex flex-col">
-                <p className="text-[18px] font-medium">Dr. Richard James</p>
-                <p className="text-[#696B80] text-[16px] font-normal">
-                  Booking on 24th July, 2024
-                </p>
+
+        {appointments.length === 0 ? (
+          <p className="p-5 text-gray-500">No upcoming appointments</p>
+        ) : (
+          <div className="flex flex-col gap-2 my-4">
+            {appointments.map((appointment: any) => (
+              <div
+                key={appointment._id}
+                className="flex items-center justify-between px-5 py-3"
+              >
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={appointment.docId?.image || assets.profile_pic}
+                    alt="doctor_icon"
+                    className="h-[52px] w-[52px] rounded-full object-cover"
+                    width={52}
+                    height={52}
+                  />
+                  <div className="flex flex-col">
+                    <p className="text-[18px] font-medium">
+                      {appointment.docId?.name || "Unknown Doctor"}
+                    </p>
+                    <p className="text-[#696B80] text-[16px] font-normal">
+                      Booking on {appointment.slotDate}, {appointment.slotTime}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="cursor-pointer">
+                    <Image
+                      src={assets_admin.cancel_icon}
+                      alt="cancel_icon"
+                      className="h-12 w-12 rounded"
+                    />
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="cursor-pointer">
-                <Image
-                  src={assets_admin.cancel_icon}
-                  alt="cancel_icon"
-                  className="h-12 w-12  rounded"
-                />
-              </button>
-            </div>
+            ))}
           </div>
-          <div className="flex items-center justify-between px-5 py-3">
-            <div className="flex items-center gap-2">
-              <Image
-                src={assets.profile_pic}
-                alt="appointments_icon"
-                className="h-[52px] w-[52px]  rounded-full"
-              />
-              <div className="flex flex-col">
-                <p className="text-[18px] font-medium">Dr. Richard James</p>
-                <p className="text-[#696B80] text-[16px] font-normal">
-                  Booking on 24th July, 2024
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="cursor-pointer">
-                <Image
-                  src={assets_admin.cancel_icon}
-                  alt="cancel_icon"
-                  className="h-12 w-12  rounded"
-                />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center justify-between px-5 py-3">
-            <div className="flex items-center gap-2">
-              <Image
-                src={assets.profile_pic}
-                alt="appointments_icon"
-                className="h-[52px] w-[52px]  rounded-full"
-              />
-              <div className="flex flex-col">
-                <p className="text-[18px] font-medium">Dr. Richard James</p>
-                <p className="text-[#696B80] text-[16px] font-normal">
-                  Booking on 24th July, 2024
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="cursor-pointer">
-                <Image
-                  src={assets_admin.cancel_icon}
-                  alt="cancel_icon"
-                  className="h-12 w-12  rounded"
-                />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center justify-between px-5 py-3">
-            <div className="flex items-center gap-2">
-              <Image
-                src={assets.profile_pic}
-                alt="appointments_icon"
-                className="h-[52px] w-[52px]  rounded-full"
-              />
-              <div className="flex flex-col">
-                <p className="text-[18px] font-medium">Dr. Richard James</p>
-                <p className="text-[#696B80] text-[16px] font-normal">
-                  Booking on 24th July, 2024
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="cursor-pointer">
-                <Image
-                  src={assets_admin.cancel_icon}
-                  alt="cancel_icon"
-                  className="h-12 w-12  rounded"
-                />
-              </button>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );
