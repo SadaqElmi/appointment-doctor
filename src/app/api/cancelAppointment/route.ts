@@ -31,9 +31,11 @@ export async function POST(req: Request) {
       success: true,
       message: "Appointment cancelled",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { success: false, message: error.message },
+      { success: false, message: errorMessage },
       { status: 500 }
     );
   }

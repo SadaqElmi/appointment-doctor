@@ -2,6 +2,17 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/model/userModel";
 import cloudinary from "@/lib/cloudinary";
 import { NextRequest, NextResponse } from "next/server";
+export type UserUpdate = {
+  phone: string;
+  gender: string;
+  dob: string;
+  age?: number;
+  image?: string;
+  address: {
+    line1: string;
+    line2: string;
+  };
+};
 
 export async function PUT(req: NextRequest) {
   try {
@@ -54,7 +65,7 @@ export async function PUT(req: NextRequest) {
       });
     }
 
-    const updateFields: any = {
+    const updateFields: UserUpdate = {
       phone,
       gender,
       dob,
@@ -78,9 +89,11 @@ export async function PUT(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, data: updatedUser });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { success: false, message: error.message },
+      { success: false, message: errorMessage },
       { status: 500 }
     );
   }

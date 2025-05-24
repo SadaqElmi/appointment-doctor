@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import { MoreVertical, X } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import axios from "axios";
 import { assets } from "@/mockdata/assets";
 import {

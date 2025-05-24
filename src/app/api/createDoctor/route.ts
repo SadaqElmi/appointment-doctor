@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       name: formData.get("name"),
       email: formData.get("email"),
       password: formData.get("password"),
-      image: (uploadResult as any).secure_url,
+      image: (uploadResult as { secure_url: string }).secure_url,
       specialization: formData.get("specialization"),
       degree: formData.get("degree"),
       experience: formData.get("experience"),
@@ -45,9 +45,11 @@ export async function POST(req: Request) {
     await doctor.save();
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { success: false, message: err.message },
+      { success: false, message: errorMessage },
       { status: 500 }
     );
   }

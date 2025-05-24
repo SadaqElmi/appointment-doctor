@@ -12,9 +12,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+type Appointment = {
+  _id: string;
+  slotDate: string;
+  slotTime: string;
+  status: string;
+  userData?: {
+    name?: string;
+    image?: string;
+    age?: number;
+  };
+};
 
 const DoctorPanel = () => {
-  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

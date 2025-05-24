@@ -31,9 +31,11 @@ export async function DELETE(
       success: true,
       message: "Appointment deleted.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage =
+      error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { success: false, message: error.message || "Server error" },
+      { success: false, message: errorMessage },
       { status: 500 }
     );
   }

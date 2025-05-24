@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -15,22 +16,35 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 
-const SignUp = () => {
+type FormFields = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+type ErrorFields = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+const SignUp: React.FC = () => {
   const router = useRouter();
-  const [form, setForm] = useState({
+
+  const [form, setForm] = useState<FormFields>({
     name: "",
     email: "",
     password: "",
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<ErrorFields>({
     name: "",
     email: "",
     password: "",
   });
 
-  const validate = () => {
-    const newErrors = { name: "", email: "", password: "" };
+  const validate = (): boolean => {
+    const newErrors: ErrorFields = { name: "", email: "", password: "" };
     let isValid = true;
 
     if (!form.name.trim()) {
@@ -61,20 +75,22 @@ const SignUp = () => {
     return isValid;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value });
-    setErrors({ ...errors, [e.target.id]: "" });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setForm((prev) => ({ ...prev, [id]: value }));
+    setErrors((prev) => ({ ...prev, [id]: "" }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!validate()) return;
 
     try {
       await axios.post("/api/auth/register", form);
       router.push("../Login");
-    } catch (error: string | any) {
-      alert(error.response?.data?.error || "Sign up failed");
+    } catch (error: unknown) {
+      const message = (error as any)?.response?.data?.error || "Sign up failed";
+      alert(message);
     }
   };
 

@@ -39,7 +39,7 @@ const DoctorLists = () => {
           )
         );
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating availability:", err);
       toast.error("Failed to update availability:");
     }

@@ -7,10 +7,29 @@ import Image from "next/image";
 import axios from "axios";
 import { X } from "lucide-react";
 
+type Appointment = {
+  _id: string;
+  slotDate: string;
+  slotTime: string;
+  status: string;
+  docData?: {
+    name?: string;
+    image?: string;
+  };
+};
+
+type User = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+};
+
 const Dashboard_Admin = () => {
   const [doctors, setDoctors] = useState([]);
-  const [appointments, setAppointments] = useState<any[]>([]);
-  const [patients, setPatients] = useState([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+
+  const [patients, setPatients] = useState<User[]>([]);
 
   useEffect(() => {
     axios.get("/api/doctor").then((res) => {
@@ -22,7 +41,7 @@ const Dashboard_Admin = () => {
     axios.get("/api/getUsers").then((res) => {
       if (res.data.success) {
         const patientUsers = res.data.users.filter(
-          (user: any) => user.role === "user"
+          (user: User) => user.role === "user"
         );
         setPatients(patientUsers);
       }
@@ -108,7 +127,7 @@ const Dashboard_Admin = () => {
           <p className="p-5 text-gray-500">No upcoming appointments</p>
         ) : (
           <div className="flex flex-col gap-2 my-4">
-            {appointments.map((appointment, index) => (
+            {appointments.map((appointment) => (
               <div
                 key={appointment._id}
                 className="flex items-center justify-between px-5 py-3"

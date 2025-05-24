@@ -12,9 +12,15 @@ export async function POST(req: Request) {
     await newAppointment.save();
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, message: error.message },
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred",
+      },
       { status: 500 }
     );
   }

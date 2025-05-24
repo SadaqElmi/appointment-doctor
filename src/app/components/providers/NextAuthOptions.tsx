@@ -1,9 +1,29 @@
 import CredentialsProvider from "next-auth/providers/credentials";
+import { NextAuthOptions } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import { Session } from "next-auth";
+
 import User from "@/model/userModel";
+import Doctor from "@/model/doctorModel";
 import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
-import { NextAuthOptions } from "next-auth";
-import Doctor from "@/model/doctorModel";
+
+// Define your custom user type
+type UserType = {
+  id: string;
+  _id: string;
+  name: string;
+  email: string;
+  role?: string;
+  image?: string;
+  phone?: string;
+  gender?: string;
+  dob?: string;
+  address?: {
+    line1?: string;
+    line2?: string;
+  };
+};
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,17 +33,15 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<UserType | null> {
         await connectDB();
 
-        if (!credentials || !credentials.email || !credentials.password) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password are required");
         }
 
-        // Try to find the user in User model
         let user = await User.findOne({ email: credentials.email });
 
-        // If not found, try Doctor model
         if (!user) {
           user = await Doctor.findOne({ email: credentials.email });
           if (!user) throw new Error("No user found");
@@ -43,7 +61,8 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) throw new Error("Invalid password");
 
         return {
-          id: user._id,
+          _id: user._id.toString(),
+          id: user._id.toString(),
           name: user.name,
           email: user.email,
           role: user.role,
@@ -59,25 +78,21 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60,
+    maxAge: 60 * 60, // 1 hour
   },
 
   callbacks: {
     async jwt({
       token,
       user,
-
       trigger,
-
       session,
     }: {
-      token: any;
-      user?: any;
-
+      token: JWT;
+      user?: UserType;
       trigger?: "signIn" | "update" | "signUp";
-
-      session?: any;
-    }) {
+      session?: Partial<UserType>;
+    }): Promise<JWT> {
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -88,12 +103,13 @@ export const authOptions: NextAuthOptions = {
         token.gender = user.gender;
         token.dob = user.dob;
         token.address = user.address;
-        token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
+        token.exp = Math.floor(Date.now() / 1000) + 60 * 60; // 1 hour expiry
       }
 
-      if (token.exp && Date.now() >= token.exp * 1000) {
+      if (token.exp && Date.now() >= Number(token.exp) * 1000) {
         throw new Error("Session expired");
       }
+
       if (trigger === "update" && session) {
         token.phone = session.phone;
         token.gender = session.gender;
@@ -101,22 +117,33 @@ export const authOptions: NextAuthOptions = {
         token.address = session.address;
         token.image = session.image;
       }
+
       return token;
     },
 
-    async session({ session, token }: { session: any; token: any }) {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
       if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.role = token.role;
-        session.user.image = token.image;
-        session.user.phone = token.phone;
-        session.user.gender = token.gender;
-        session.user.dob = token.dob;
-        session.user.address = token.address;
-        session.expires = new Date(token.exp * 1000).toISOString();
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.role = token.role as string;
+        session.user.image = token.image as string;
+        session.user.phone = token.phone as string;
+        session.user.gender = token.gender as string;
+        session.user.dob = token.dob as string;
+        session.user.address = token.address as {
+          line1?: string;
+          line2?: string;
+        };
+        session.expires = new Date(Number(token.exp) * 1000).toISOString();
       }
+
       const freshUser =
         (await User.findById(token.id)) || (await Doctor.findById(token.id));
 
@@ -127,6 +154,7 @@ export const authOptions: NextAuthOptions = {
         session.user.address = freshUser.address;
         session.user.image = freshUser.image;
       }
+
       return session;
     },
   },

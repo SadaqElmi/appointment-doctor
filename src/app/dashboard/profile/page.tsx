@@ -5,12 +5,24 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState, ChangeEvent } from "react";
 import toast from "react-hot-toast";
-
+type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+  image: string;
+  phone?: string;
+  gender?: string;
+  dob?: string;
+  address?: {
+    line1?: string;
+    line2?: string;
+  };
+};
 const Profile = () => {
   const { data: session, update } = useSession();
   const [isEditing, setIsEditing] = useState(false);
 
-  const user = session?.user as any;
+  const user = session?.user as UserProfile;
 
   const [form, setForm] = useState({
     id: user?.id || "",

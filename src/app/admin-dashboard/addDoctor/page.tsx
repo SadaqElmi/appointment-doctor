@@ -71,8 +71,14 @@ const AddDoctor = () => {
         about: "",
         department: "General",
       });
-    } catch (error: string | any) {
-      alert("Failed to add doctor: " + error.message);
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "message" in error) {
+        alert(
+          "Failed to add doctor: " + (error as { message: string }).message
+        );
+      } else {
+        alert("Failed to add doctor: " + String(error));
+      }
     }
   };
 
