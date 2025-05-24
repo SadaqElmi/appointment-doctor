@@ -1,8 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { Session } from "next-auth";
-
 import User from "@/model/userModel";
 import Doctor from "@/model/doctorModel";
 import { connectDB } from "@/lib/mongodb";
@@ -25,7 +23,7 @@ type UserType = {
   };
 };
 
-export const authOptions: NextAuthOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",

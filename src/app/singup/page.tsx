@@ -88,8 +88,13 @@ const SignUp: React.FC = () => {
     try {
       await axios.post("/api/auth/register", form);
       router.push("../Login");
-    } catch (error: unknown) {
-      const message = (error as any)?.response?.data?.error || "Sign up failed";
+    } catch (error) {
+      let message = "Sign up failed";
+
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.error || message;
+      }
+
       alert(message);
     }
   };
