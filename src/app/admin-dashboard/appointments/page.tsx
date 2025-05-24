@@ -26,11 +26,11 @@ type Appointment = {
     image?: string;
     name?: string;
     department?: string;
+    fees?: number;
   };
   slotDate?: string;
   amount?: number;
   status?: string;
-  fees?: number;
 };
 
 const Appointments = () => {
@@ -120,7 +120,7 @@ const Appointments = () => {
                     />
                     {appointment.docData?.name || "Unknown Doctor"}
                   </TableCell>
-                  <TableCell>${appointment?.fees}</TableCell>
+                  <TableCell>${appointment?.docData?.fees}</TableCell>
                   <TableCell>{appointment?.status}</TableCell>
                   <TableCell>
                     <button

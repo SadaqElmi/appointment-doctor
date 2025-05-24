@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     const updatedAppointment = await appointmentModel.findByIdAndUpdate(
       appointmentId,
-      { payment: true },
+      { payment: true, isCompleted: true },
       { new: true }
     );
 
