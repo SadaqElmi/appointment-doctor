@@ -146,9 +146,10 @@ const Patients = () => {
                     <Image
                       src={app.image || assets.profile_pic}
                       alt="patient"
+                      className="rounded-full object-cover h-[30px] w-[30px]"
                       width={30}
                       height={30}
-                      className="rounded-full"
+                      priority
                     />
                     {app.name || "N/A"}
                   </TableCell>

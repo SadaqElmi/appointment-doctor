@@ -24,6 +24,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Patients from "./Patients/page";
+import Profile from "./profile/page";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -86,6 +87,7 @@ export default function AdminDashboard() {
           {activeComponent === "addDoctor" && <AddDoctor />}
           {activeComponent === "doctorLists" && <DoctorLists />}
           {activeComponent === "Patients" && <Patients />}
+          {activeComponent === "profile" && <Profile />}
         </div>
       </SidebarInset>
     </SidebarProvider>
