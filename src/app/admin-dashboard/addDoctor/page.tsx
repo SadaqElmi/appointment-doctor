@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { assets } from "@/mockdata/assets";
+import toast from "react-hot-toast";
 
 const AddDoctor = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -56,7 +57,20 @@ const AddDoctor = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Doctor added successfully!");
+      toast.success("Doctor added successfully!");
+      setFormValues({
+        name: "",
+        email: "",
+        password: "",
+        experience: "1",
+        fees: "",
+        specialization: "General physician",
+        degree: "",
+        address1: "",
+        address2: "",
+        about: "",
+        department: "General",
+      });
     } catch (error: any) {
       alert("Failed to add doctor: " + error.message);
     }

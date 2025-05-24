@@ -36,8 +36,10 @@ export default function AdminDashboard() {
     if (status === "unauthenticated") {
       router.replace("/Login");
     }
-
-    if (status === "authenticated" && session?.user?.role !== "admin") {
+    if (
+      status === "authenticated" &&
+      !["admin", "doctor"].includes(session?.user?.role ?? "")
+    ) {
       router.replace("/unauthorized");
     }
   }, [status, session, router]);
@@ -58,6 +60,7 @@ export default function AdminDashboard() {
           name: session?.user?.name || "No name",
           email: session?.user?.email || "No email",
           avatar: session?.user?.image || "No Image",
+          role: session?.user?.role || "user",
         }}
       />
       <SidebarInset>
@@ -81,12 +84,17 @@ export default function AdminDashboard() {
           </div>
         </header>
         <div className="flex flex-col gap-4 p-2 pt-0">
-          {activeComponent === "dashboard" && <Dashboard_Admin />}
-          {activeComponent === "appointments" && <Appointments />}
+          {activeComponent === "dashboard" &&
+            session?.user?.role === "admin" && <Dashboard_Admin />}
+          {activeComponent === "appointments" &&
+            session?.user?.role === "admin" && <Appointments />}
           {activeComponent === "doctorPanel" && <DoctorPanel />}
-          {activeComponent === "addDoctor" && <AddDoctor />}
-          {activeComponent === "doctorLists" && <DoctorLists />}
-          {activeComponent === "Patients" && <Patients />}
+          {activeComponent === "addDoctor" &&
+            session?.user?.role === "admin" && <AddDoctor />}
+          {activeComponent === "doctorLists" &&
+            session?.user?.role === "admin" && <DoctorLists />}
+          {activeComponent === "Patients" &&
+            session?.user?.role === "admin" && <Patients />}
           {activeComponent === "profile" && <Profile />}
         </div>
       </SidebarInset>

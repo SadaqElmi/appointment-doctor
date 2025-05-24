@@ -3,6 +3,7 @@ import User from "@/model/userModel";
 import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
+import Doctor from "@/model/doctorModel";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -19,8 +20,14 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email and password are required");
         }
 
-        const user = await User.findOne({ email: credentials.email });
-        if (!user) throw new Error("No user found");
+        // Try to find the user in User model
+        let user = await User.findOne({ email: credentials.email });
+
+        // If not found, try Doctor model
+        if (!user) {
+          user = await Doctor.findOne({ email: credentials.email });
+          if (!user) throw new Error("No user found");
+        }
 
         if (user.bannedUntil && new Date(user.bannedUntil) > new Date()) {
           const banTime = new Date(user.bannedUntil).toLocaleString("en-US", {
@@ -110,7 +117,9 @@ export const authOptions: NextAuthOptions = {
         session.user.address = token.address;
         session.expires = new Date(token.exp * 1000).toISOString();
       }
-      const freshUser = await User.findById(token.id);
+      const freshUser =
+        (await User.findById(token.id)) || (await Doctor.findById(token.id));
+
       if (freshUser) {
         session.user.phone = freshUser.phone;
         session.user.gender = freshUser.gender;

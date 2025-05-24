@@ -7,7 +7,6 @@ import {
   List,
   PlusCircle,
   User,
-  UserPen,
   UserPlus,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
@@ -19,19 +18,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-const navItems = [
-  { title: "Dashboard", component: "dashboard", icon: LayoutDashboard },
-  { title: "Appointments", component: "appointments", icon: PlusCircle },
-  {
-    title: "Doctor Panel",
-    component: "doctorPanel",
-    icon: BriefcaseMedical,
-  },
-  { title: "Add Doctor", component: "addDoctor", icon: UserPlus },
-  { title: "Doctor Lists", component: "doctorLists", icon: List },
-  { title: "Patients", component: "Patients", icon: User },
-];
-
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   onNavigate: (component: string, title: string) => void;
   activeComponent: string;
@@ -39,6 +25,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
     name: string;
     email: string;
     avatar: string;
+    role: string;
   };
 }
 
@@ -48,6 +35,32 @@ export function AppSidebar({
   user,
   ...props
 }: AppSidebarProps) {
+  const navItems =
+    user.role === "doctor"
+      ? [
+          {
+            title: "Doctor Panel",
+            component: "doctorPanel",
+            icon: BriefcaseMedical,
+          },
+        ]
+      : [
+          { title: "Dashboard", component: "dashboard", icon: LayoutDashboard },
+          {
+            title: "Appointments",
+            component: "appointments",
+            icon: PlusCircle,
+          },
+          {
+            title: "Doctor Panel",
+            component: "doctorPanel",
+            icon: BriefcaseMedical,
+          },
+          { title: "Add Doctor", component: "addDoctor", icon: UserPlus },
+          { title: "Doctor Lists", component: "doctorLists", icon: List },
+          { title: "Patients", component: "Patients", icon: User },
+        ];
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>

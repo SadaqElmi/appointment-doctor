@@ -36,9 +36,9 @@ export function NavMain({
                 <SidebarMenuButton
                   tooltip={item.title}
                   onClick={() => onNavigate(item.component, item.title)}
-                  className={`${
+                  className={`$ {
                     item.component === activeComponent
-                      ? "bg-[#f2f3ff] border-r-5 border-[#5f6fff] pb-2 p-8 text-[#515151] "
+                      ? "bg-[#f2f3ff] border-r-5 border-[#5f6fff] pb-2 p-8 text-[#515151]"
                       : "pb-2 p-8"
                   }`}
                 >

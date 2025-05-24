@@ -43,11 +43,12 @@ const LoginForm = () => {
     const session = await getSession();
     console.log("🟢 SESSION:", session);
 
-    if (session?.user?.role === "admin") {
+    if (session?.user?.role === "admin" || session?.user?.role === "doctor") {
       router.push("/admin-dashboard");
     } else {
       router.push("/dashboard");
     }
+
     setLoading(false);
     toast.success("Login Seccessfull");
   };

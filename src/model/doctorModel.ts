@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import { Schema, model, models, Document } from "mongoose";
 
 interface DoctorDocument extends Document {
@@ -52,6 +53,11 @@ const doctorSchema = new Schema<DoctorDocument>(
   },
   { minimize: false }
 );
+doctorSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 const Doctor = models.Doctor || model<DoctorDocument>("Doctor", doctorSchema);
 
