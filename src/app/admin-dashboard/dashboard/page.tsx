@@ -136,15 +136,6 @@ const Dashboard_Admin = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="cursor-pointer">
-                    <Image
-                      src={assets_admin.cancel_icon}
-                      alt="cancel_icon"
-                      className="h-12 w-12 rounded"
-                    />
-                  </button>
-                </div>
               </div>
             ))}
           </div>
