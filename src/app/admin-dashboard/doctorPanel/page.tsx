@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { assets_admin } from "@/mockdata/assentAdmin";
 import { assets } from "@/mockdata/assets";
 import {
   Table,

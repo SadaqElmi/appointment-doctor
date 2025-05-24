@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   List,
   PlusCircle,
+  User,
   UserPlus,
 } from "lucide-react";
 import { NavMain } from "./nav-main";
@@ -27,6 +28,7 @@ const navItems = [
   },
   { title: "Add Doctor", component: "addDoctor", icon: UserPlus },
   { title: "Doctor Lists", component: "doctorLists", icon: List },
+  { title: "Patients", component: "Patients", icon: User },
 ];
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {

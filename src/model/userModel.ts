@@ -16,6 +16,8 @@ interface UserDocument extends Document {
   dob?: string;
   phone?: string;
   role?: "user" | "admin";
+  bannedUntil?: Date;
+  verified: boolean;
 }
 
 const addressSchema = new Schema(
@@ -43,6 +45,8 @@ const userSchema = new Schema<UserDocument>(
     age: { type: Number, default: 0 },
     dob: { type: String, default: "Not Selected" },
     phone: { type: String, default: "000000000" },
+    bannedUntil: { type: Date },
+    verified: { type: Boolean, default: false },
   },
   { minimize: false }
 );

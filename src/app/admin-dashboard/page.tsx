@@ -23,6 +23,7 @@ import DoctorLists from "./doctorLists/page";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Patients from "./Patients/page";
 
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
@@ -84,6 +85,7 @@ export default function AdminDashboard() {
           {activeComponent === "doctorPanel" && <DoctorPanel />}
           {activeComponent === "addDoctor" && <AddDoctor />}
           {activeComponent === "doctorLists" && <DoctorLists />}
+          {activeComponent === "Patients" && <Patients />}
         </div>
       </SidebarInset>
     </SidebarProvider>

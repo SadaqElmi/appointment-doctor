@@ -22,6 +22,13 @@ export const authOptions: NextAuthOptions = {
         const user = await User.findOne({ email: credentials.email });
         if (!user) throw new Error("No user found");
 
+        if (user.bannedUntil && new Date(user.bannedUntil) > new Date()) {
+          const banTime = new Date(user.bannedUntil).toLocaleString("en-US", {
+            timeZone: "Africa/Mogadishu",
+          });
+          throw new Error(`User banned until ${banTime}`);
+        }
+
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password
