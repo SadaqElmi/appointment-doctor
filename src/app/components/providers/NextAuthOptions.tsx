@@ -1,13 +1,14 @@
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
-import { Session } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
+import type { Session } from "next-auth";
 import User from "@/model/userModel";
 import Doctor from "@/model/doctorModel";
 import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
+import { JWT } from "next-auth/jwt";
 
-// Define your custom user type
-type UserType = {
+// Optional: database user type
+type DBUser = {
   id: string;
   _id: string;
   name: string;
@@ -23,7 +24,7 @@ type UserType = {
   };
 };
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -31,7 +32,7 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<UserType | null> {
+      async authorize(credentials): Promise<DBUser | null> {
         await connectDB();
 
         if (!credentials?.email || !credentials?.password) {
@@ -87,9 +88,9 @@ export const authOptions = {
       session,
     }: {
       token: JWT;
-      user?: UserType;
+      user?: DBUser;
       trigger?: "signIn" | "update" | "signUp";
-      session?: Partial<UserType>;
+      session?: Partial<DBUser>;
     }): Promise<JWT> {
       if (user) {
         token.id = user.id;
@@ -101,7 +102,7 @@ export const authOptions = {
         token.gender = user.gender;
         token.dob = user.dob;
         token.address = user.address;
-        token.exp = Math.floor(Date.now() / 1000) + 60 * 60; // 1 hour expiry
+        token.exp = Math.floor(Date.now() / 1000) + 60 * 60;
       }
 
       if (token.exp && Date.now() >= Number(token.exp) * 1000) {
@@ -144,7 +145,6 @@ export const authOptions = {
 
       const freshUser =
         (await User.findById(token.id)) || (await Doctor.findById(token.id));
-
       if (freshUser) {
         session.user.phone = freshUser.phone;
         session.user.gender = freshUser.gender;

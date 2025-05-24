@@ -1,6 +1,8 @@
+// types/next-auth.d.ts
+import { DefaultSession, DefaultUser } from "next-auth";
+
 declare module "next-auth" {
-  interface Session {
-    expires: string;
+  interface Session extends DefaultSession {
     user: {
       _id: string;
       id: string;
@@ -18,7 +20,7 @@ declare module "next-auth" {
     };
   }
 
-  interface User {
+  interface User extends DefaultUser {
     _id: string;
     id: string;
     name: string;

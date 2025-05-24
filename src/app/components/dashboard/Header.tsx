@@ -19,7 +19,6 @@ import { useRouter } from "next/navigation";
 const HeaderDashboard = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log("User image:", session?.user?.image);
 
   useEffect(() => {
     if (status === "unauthenticated") {

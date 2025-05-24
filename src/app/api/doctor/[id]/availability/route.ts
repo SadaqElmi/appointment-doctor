@@ -3,15 +3,15 @@ import Doctor from "@/model/doctorModel";
 import { NextResponse } from "next/server";
 
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   try {
-    const { available } = await req.json();
+    const { available } = await request.json();
 
     const doctor = await Doctor.findByIdAndUpdate(
-      params.id,
+      (await params).id,
       { available },
       { new: true }
     ).lean();

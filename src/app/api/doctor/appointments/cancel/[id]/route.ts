@@ -4,8 +4,8 @@ import appointmentModel from "@/model/appointmentDoctor";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/components/providers/NextAuthOptions";
 export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const session = await getServerSession(authOptions);
@@ -21,7 +21,9 @@ export async function PUT(
   }
 
   try {
-    await appointmentModel.findByIdAndUpdate(params.id, { cancelled: 1 });
+    await appointmentModel.findByIdAndUpdate((await params).id, {
+      cancelled: 1,
+    });
     return NextResponse.json({
       success: true,
       message: "Appointment cancelled",
