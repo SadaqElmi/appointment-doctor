@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 type Doctor = {
   _id: string;
@@ -18,13 +19,31 @@ const DoctorLists = () => {
 
   useEffect(() => {
     axios
-      .get("/api/getDoctors")
+      .get("/api/doctor")
       .then((res) => {
         if (res.data.success) setDoctors(res.data.doctors);
       })
       .catch((err) => console.error("Error loading doctors:", err))
       .finally(() => setLoading(false));
   }, []);
+  const toggleAvailability = async (id: string, newValue: boolean) => {
+    try {
+      const res = await axios.put(`/api/doctor/${id}/availability`, {
+        available: newValue,
+      });
+
+      if (res.data.success) {
+        setDoctors((prev) =>
+          prev.map((doc) =>
+            doc._id === id ? { ...doc, available: newValue } : doc
+          )
+        );
+      }
+    } catch (err: any) {
+      console.error("Error updating availability:", err);
+      toast.error("Failed to update availability:");
+    }
+  };
 
   if (loading)
     return <div className="p-4 text-gray-600">Loading doctors...</div>;
@@ -52,7 +71,12 @@ const DoctorLists = () => {
                 {item.specialization}
               </p>
               <div className="mt-2 flex items-center gap-1 text-sm">
-                <input type="checkbox" checked={item.available} readOnly />
+                <input
+                  type="checkbox"
+                  checked={item.available}
+                  onChange={() => toggleAvailability(item._id, !item.available)}
+                />
+
                 <p>{item.available ? "Available" : "Unavailable"}</p>
               </div>
             </div>
