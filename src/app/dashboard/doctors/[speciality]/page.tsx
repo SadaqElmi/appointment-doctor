@@ -40,7 +40,7 @@ const Doctors = () => {
 
   useEffect(() => {
     axios
-      .get("/api/getDoctors")
+      .get("/api/doctor")
       .then((res) => {
         if (res.data.success) setDoctors(res.data.doctors);
       })

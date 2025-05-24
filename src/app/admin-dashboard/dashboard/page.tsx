@@ -13,7 +13,7 @@ const Dashboard_Admin = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/getDoctors").then((res) => {
+    axios.get("/api/doctor").then((res) => {
       if (res.data.success) setDoctors(res.data.doctors);
     });
     axios.get("/api/getAppointments").then((res) => {
