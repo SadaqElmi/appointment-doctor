@@ -9,6 +9,7 @@ import { assets } from "@/mockdata/assets";
 import toast from "react-hot-toast";
 
 type Doctor = {
+  available: boolean;
   _id: string;
   name: string;
   image: string;
@@ -226,7 +227,13 @@ const AppointmentDoctor = () => {
           {relatedDoctors.map((item) => (
             <div
               key={item._id}
-              onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
+              onClick={() => {
+                if (!item.available) {
+                  toast.success("Doctor is currently unavailable.");
+                  return;
+                }
+                router.push(`/dashboard/appointment/${item._id}`);
+              }}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image

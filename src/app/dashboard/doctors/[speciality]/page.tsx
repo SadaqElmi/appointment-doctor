@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const specialities = [
   "All",
@@ -17,6 +18,7 @@ const specialities = [
 ];
 
 type Doctor = {
+  available: boolean;
   _id: string;
   name: string;
   image: string;
@@ -89,7 +91,13 @@ const Doctors = () => {
           {filteredDoctors.map((item) => (
             <div
               key={item._id}
-              onClick={() => router.push(`/dashboard/appointment/${item._id}`)}
+              onClick={() => {
+                if (!item.available) {
+                  toast.success("Doctor is currently unavailable.");
+                  return;
+                }
+                router.push(`/dashboard/appointment/${item._id}`);
+              }}
               className="border border-[#C9D8FF] rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500 w-[252px]"
             >
               <Image
@@ -101,9 +109,17 @@ const Doctors = () => {
                 height={222}
               />
               <div className="p-4">
-                <div className="flex items-center gap-2 text-sm text-center text-green-500">
-                  <p className="w-2 h-2 rounded-full bg-green-500"></p>
-                  <p>Available</p>
+                <div
+                  className={`flex items-center gap-2 text-sm ${
+                    item.available ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  <p
+                    className={`w-2 h-2 rounded-full ${
+                      item.available ? "bg-green-500" : "bg-red-500"
+                    }`}
+                  ></p>
+                  <p>{item.available ? "Available" : "Unavailable"}</p>
                 </div>
                 <p className="text-[#262626] text-lg font-medium">
                   {item.name}
