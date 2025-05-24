@@ -51,11 +51,6 @@ export function AppSidebar({
             component: "appointments",
             icon: PlusCircle,
           },
-          {
-            title: "Doctor Panel",
-            component: "doctorPanel",
-            icon: BriefcaseMedical,
-          },
           { title: "Add Doctor", component: "addDoctor", icon: UserPlus },
           { title: "Doctor Lists", component: "doctorLists", icon: List },
           { title: "Patients", component: "Patients", icon: User },

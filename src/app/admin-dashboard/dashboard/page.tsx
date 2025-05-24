@@ -5,46 +5,40 @@ import { assets_admin } from "@/mockdata/assentAdmin";
 import { assets } from "@/mockdata/assets";
 import Image from "next/image";
 import axios from "axios";
+import { X } from "lucide-react";
 
 const Dashboard_Admin = () => {
   const [doctors, setDoctors] = useState([]);
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [patients, setPatients] = useState([]);
 
-  // Fetch Doctors
   useEffect(() => {
-    axios
-      .get("/api/getDoctors")
-      .then((res) => {
-        if (res.data.success) setDoctors(res.data.doctors);
-      })
-      .catch((err) => console.error("Failed to fetch doctors:", err));
+    axios.get("/api/getDoctors").then((res) => {
+      if (res.data.success) setDoctors(res.data.doctors);
+    });
+    axios.get("/api/getAppointments").then((res) => {
+      if (res.data.success) setAppointments(res.data.appointments);
+    });
+    axios.get("/api/getUsers").then((res) => {
+      if (res.data.success) {
+        const patientUsers = res.data.users.filter(
+          (user: any) => user.role === "user"
+        );
+        setPatients(patientUsers);
+      }
+    });
   }, []);
 
-  // Fetch Appointments
-  useEffect(() => {
-    axios
-      .get("/api/getAppointments")
-      .then((res) => {
-        if (res.data.success) setAppointments(res.data.appointments);
-      })
-      .catch((err) => console.error("Failed to fetch appointments:", err));
-  }, []);
-
-  // Fetch Users with role 'user' = Patients
-  useEffect(() => {
-    axios
-      .get("/api/getUsers")
-      .then((res) => {
-        if (res.data.success) {
-          const patientUsers = res.data.users.filter(
-            (user: any) => user.role === "user"
-          );
-          setPatients(patientUsers);
-        }
-      })
-      .catch((err) => console.error("Failed to fetch users:", err));
-  }, []);
+  const handleCancel = async (id: string) => {
+    try {
+      await axios.put(`/api/doctor/appointments/cancel/${id}`);
+      setAppointments((prev) =>
+        prev.map((a) => (a._id === id ? { ...a, status: "cancelled" } : a))
+      );
+    } catch (err) {
+      console.error("Cancel failed:", err);
+    }
+  };
 
   return (
     <>
@@ -98,8 +92,8 @@ const Dashboard_Admin = () => {
         </div>
       </div>
 
-      {/* Latest Appointment */}
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-[#FFFFFF] md:min-h-min border border-[#E6E8F0] shadow-md ">
+      {/* Latest Appointment Table */}
+      <div className="min-h-[100vh] flex-1 rounded-xl bg-[#FFFFFF] md:min-h-min border border-[#E6E8F0] shadow-md">
         <div className="px-5 py-3 flex gap-2 items-center">
           <Image
             src={assets_admin.list_icon}
@@ -114,14 +108,14 @@ const Dashboard_Admin = () => {
           <p className="p-5 text-gray-500">No upcoming appointments</p>
         ) : (
           <div className="flex flex-col gap-2 my-4">
-            {appointments.map((appointment: any) => (
+            {appointments.map((appointment, index) => (
               <div
                 key={appointment._id}
                 className="flex items-center justify-between px-5 py-3"
               >
                 <div className="flex items-center gap-2">
                   <Image
-                    src={appointment.docId?.image || assets.profile_pic}
+                    src={appointment.docData?.image || assets.profile_pic}
                     alt="doctor_icon"
                     className="h-[52px] w-[52px] rounded-full object-cover"
                     width={52}
@@ -129,12 +123,25 @@ const Dashboard_Admin = () => {
                   />
                   <div className="flex flex-col">
                     <p className="text-[18px] font-medium">
-                      {appointment.docId?.name || "Unknown Doctor"}
+                      {appointment.docData?.name}
                     </p>
                     <p className="text-[#696B80] text-[16px] font-normal">
                       Booking on {appointment.slotDate}, {appointment.slotTime}
                     </p>
                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="capitalize text-sm text-gray-500">
+                    {appointment.status}
+                  </span>
+                  {appointment.status === "upcoming" && (
+                    <button
+                      onClick={() => handleCancel(appointment._id)}
+                      className="bg-red-100 text-red-600 hover:bg-red-200 w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

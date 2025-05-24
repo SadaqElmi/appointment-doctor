@@ -17,12 +17,12 @@ import toast from "react-hot-toast";
 
 type Appointment = {
   _id: string;
-  userId?: {
+  userData?: {
     image?: string;
     name?: string;
     age?: number;
   };
-  docId?: {
+  docData?: {
     image?: string;
     name?: string;
     department?: string;
@@ -75,6 +75,7 @@ const Appointments = () => {
               <TableHead>Date & Time</TableHead>
               <TableHead>Doctor</TableHead>
               <TableHead>Fees</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -94,30 +95,31 @@ const Appointments = () => {
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Image
-                      src={appointment.userId?.image || assets.profile_pic}
+                      src={appointment.userData?.image || assets.profile_pic}
                       alt="patient"
                       width={30}
                       height={30}
                       className="rounded-full"
                       priority
                     />
-                    {appointment.userId?.name || "Unknown Patient"}
+                    {appointment.userData?.name || "Unknown Patient"}
                   </TableCell>
-                  <TableCell>{appointment.docId?.department}</TableCell>
-                  <TableCell>{appointment.userId?.age}</TableCell>
+                  <TableCell>{appointment.docData?.department}</TableCell>
+                  <TableCell>{appointment.userData?.age}</TableCell>
                   <TableCell>{appointment.slotDate}</TableCell>
                   <TableCell className="flex items-center gap-2">
                     <Image
-                      src={appointment.docId?.image || assets.profile_pic}
+                      src={appointment.docData?.image || assets.profile_pic}
                       alt="doctor"
                       width={30}
                       height={30}
                       className="rounded-full"
                       priority
                     />
-                    {appointment.docId?.name || "Unknown Doctor"}
+                    {appointment.docData?.name || "Unknown Doctor"}
                   </TableCell>
-                  <TableCell>${appointment.amount}</TableCell>
+                  <TableCell>${appointment.docData.fees}</TableCell>
+                  <TableCell>{appointment.status}</TableCell>
                   <TableCell>
                     <button
                       onClick={() => handleDelete(appointment._id)}

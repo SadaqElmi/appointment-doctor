@@ -10,7 +10,10 @@ export async function PUT(
   await connectDB();
   const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "doctor") {
+  if (
+    !session ||
+    (session.user.role !== "doctor" && session.user.role !== "admin")
+  ) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
       { status: 401 }
