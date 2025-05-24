@@ -57,8 +57,8 @@ const MyAppointments = () => {
     try {
       const res = await axios.post("/api/cancelAppointment", { appointmentId });
       if (res.data.success) {
-        setAppointments((prev) =>
-          prev.map((a: any) =>
+        setAppointments((prev: Appointment[]) =>
+          prev.map((a) =>
             a._id === appointmentId ? { ...a, cancelled: 1 } : a
           )
         );
@@ -75,15 +75,16 @@ const MyAppointments = () => {
     <div className="max-w-6xl mx-auto">
       <p className="pb-3 mt-12 text-lg font-medium text-gray-600 border-b">
         My appointments (
-        {appointments.filter((a: any) => a.cancelled !== 1).length})
+        {appointments.filter((a: Appointment) => a.cancelled !== 1).length})
       </p>
 
-      {appointments.filter((a: any) => a.cancelled !== 1).length === 0 ? (
+      {appointments.filter((a: Appointment) => a.cancelled !== 1).length ===
+      0 ? (
         <p className="mt-6 text-gray-500">No upcoming appointments</p>
       ) : (
         appointments
-          .filter((a: any) => a.cancelled !== 1)
-          .map((appointment: any) => (
+          .filter((a: Appointment) => a.cancelled !== 1)
+          .map((appointment: Appointment) => (
             <div
               key={appointment._id}
               className="grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-4 border-b"

@@ -73,7 +73,7 @@ const SignUp = () => {
     try {
       await axios.post("/api/auth/register", form);
       router.push("../Login");
-    } catch (error: any) {
+    } catch (error: string | any) {
       alert(error.response?.data?.error || "Sign up failed");
     }
   };

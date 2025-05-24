@@ -29,6 +29,8 @@ type Appointment = {
   };
   slotDate?: string;
   amount?: number;
+  status?: string;
+  fees?: number;
 };
 
 const Appointments = () => {
@@ -90,7 +92,7 @@ const Appointments = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              appointments.map((appointment: any, index) => (
+              appointments.map((appointment: Appointment, index) => (
                 <TableRow key={appointment._id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell className="flex items-center gap-2">
@@ -118,8 +120,8 @@ const Appointments = () => {
                     />
                     {appointment.docData?.name || "Unknown Doctor"}
                   </TableCell>
-                  <TableCell>${appointment.docData.fees}</TableCell>
-                  <TableCell>{appointment.status}</TableCell>
+                  <TableCell>${appointment?.fees}</TableCell>
+                  <TableCell>{appointment?.status}</TableCell>
                   <TableCell>
                     <button
                       onClick={() => handleDelete(appointment._id)}

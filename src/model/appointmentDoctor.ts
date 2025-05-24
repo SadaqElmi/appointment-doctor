@@ -6,8 +6,8 @@ interface AppointmentDocument extends Document {
   docId: Schema.Types.ObjectId;
   slotDate: string;
   slotTime: string;
-  userData: Record<string, any>;
-  docData: Record<string, any>;
+  userData: Record<string, Date>;
+  docData: Record<string, Date>;
   amount: number;
   date: number;
   cancelled: number;

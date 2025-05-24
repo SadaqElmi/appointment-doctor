@@ -71,7 +71,7 @@ const AddDoctor = () => {
         about: "",
         department: "General",
       });
-    } catch (error: any) {
+    } catch (error: string | any) {
       alert("Failed to add doctor: " + error.message);
     }
   };

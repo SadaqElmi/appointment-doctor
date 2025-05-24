@@ -31,7 +31,7 @@ const About = () => {
               Appointment Doctor is committed to excellence in healthcare
               technology. We continuously strive to enhance our platform,
               integrating the latest advancements to improve user experience and
-              deliver superior service. Whether you're booking your first
+              deliver superior service. Whether you are booking your first
               appointment or managing ongoing care, Appointment Doctor is here
               to support you every step of the way.
             </p>
