@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 type Appointment = {
+  payment: boolean;
   _id: string;
   cancelled?: number;
   slotDate?: string;
@@ -65,6 +66,22 @@ const MyAppointments = () => {
       }
     } catch (err) {
       console.error("Cancellation failed:", err);
+    }
+  };
+  const payByCash = async (appointmentId: string) => {
+    try {
+      const res = await axios.post("/api/myAppointments/payCash", {
+        appointmentId,
+      });
+      if (res.data.success) {
+        setAppointments((prev: Appointment[]) =>
+          prev.map((a) =>
+            a._id === appointmentId ? { ...a, payment: true } : a
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Payment by cash failed:", err);
     }
   };
 
@@ -121,43 +138,77 @@ const MyAppointments = () => {
                 )}
               </div>
               <div className="flex flex-col gap-2 justify-end text-sm text-center">
-                <button className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300">
-                  Pay Online
-                </button>
+                {appointment.payment ? (
+                  <p className="text-green-600 text-sm font-medium">
+                    Paid by Cash
+                  </p>
+                ) : (
+                  <>
+                    {/* Pay by Cash Dialog */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300">
+                          Pay Online
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Do you want pay by cash?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will mark your appointment as paid by cash.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300 bg-transparent"
+                            onClick={() => payByCash(appointment._id)}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
 
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300"
-                    >
-                      Cancel appointment
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently
-                        delete your account and remove your data from our
-                        servers.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300 bg-transparent"
-                        onClick={() => cancelAppointment(appointment._id)}
-                      >
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                    {/* Cancel Appointment Dialog */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="text-[#696969] sm:min-w-48 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300"
+                        >
+                          Cancel appointment
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will cancel your appointment and remove your
+                            slot.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#ff5f5f] hover:text-white transition-all duration-300">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            className="text-[#696969] sm:min-w-8 py-2 border rounded hover:bg-[#5f6fff] hover:text-white transition-all duration-300 bg-transparent"
+                            onClick={() => cancelAppointment(appointment._id)}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </>
+                )}
               </div>
             </div>
           ))
