@@ -1,5 +1,5 @@
+import { assets } from "@/mockdata/assets";
 import Image from "next/image";
-import Book from "@/../public/assets_frontend/appointment_img.png";
 
 export default function BookAppointment() {
   return (
@@ -18,7 +18,7 @@ export default function BookAppointment() {
       </div>
       <div className="hidden md:block md:w-1/2 lg:w-[370px] relative">
         <Image
-          src={Book}
+          src={assets.appointment_img}
           alt="Book"
           className="w-full absolute bottom-0 right-0 max-w-md"
         />
