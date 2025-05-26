@@ -1,3 +1,4 @@
+import { assets } from "@/mockdata/assets";
 import Image from "next/image";
 import React from "react";
 
@@ -10,7 +11,7 @@ function Footer() {
       >
         <div className="">
           <Image
-            src="/assets_frontend/logo.svg"
+            src={assets.logo}
             alt="Logo"
             width={150}
             height={150}
