@@ -21,6 +21,8 @@ export default function BookAppointment() {
           src={assets.appointment_img}
           alt="Book"
           className="w-full absolute bottom-0 right-0 max-w-md"
+          fill
+          priority
         />
       </div>
     </div>

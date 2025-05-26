@@ -16,6 +16,7 @@ import { assets } from "@/mockdata/assets";
 
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { ArrowDown } from "lucide-react";
 const HeaderDashboard = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -36,7 +37,13 @@ const HeaderDashboard = () => {
       <div className="flex justify-between items-center  p-4 mb-6  border-b border-black">
         <div className="logo">
           <Link href="../../dashboard">
-            <Image width={150} height={150} src={assets.logo} alt="Logo" />
+            <Image
+              width={150}
+              height={150}
+              src={assets.logo}
+              alt="Logo"
+              priority
+            />
           </Link>
         </div>
 
@@ -89,7 +96,7 @@ const HeaderDashboard = () => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <Image src={assets.dropdown_icon} alt="DropdownMenuItem" />
+              <ArrowDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
