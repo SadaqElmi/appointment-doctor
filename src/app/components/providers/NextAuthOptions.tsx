@@ -6,6 +6,7 @@ import Doctor from "@/model/doctorModel";
 import { connectDB } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
+import jwt from "jsonwebtoken";
 
 // Optional: database user type
 type DBUser = {
@@ -22,6 +23,7 @@ type DBUser = {
     line1?: string;
     line2?: string;
   };
+  token?: string;
 };
 
 export const authOptions: NextAuthOptions = {
@@ -31,8 +33,12 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        expo: { label: "Expo", type: "text", optional: true },
       },
-      async authorize(credentials): Promise<DBUser | null> {
+      async authorize(
+        credentials: Record<"email" | "password" | "expo", string> | undefined,
+        req?: any
+      ): Promise<DBUser | null> {
         await connectDB();
 
         if (!credentials?.email || !credentials?.password) {
@@ -59,6 +65,15 @@ export const authOptions: NextAuthOptions = {
         );
         if (!isValid) throw new Error("Invalid password");
 
+        const isExpo =
+          typeof credentials?.expo === "string" && credentials.expo === "1";
+
+        const token = jwt.sign(
+          { id: user._id.toString(), email: user.email, role: user.role },
+          process.env.JWT_SECRET!,
+          { expiresIn: "1h" }
+        );
+
         return {
           _id: user._id.toString(),
           id: user._id.toString(),
@@ -70,6 +85,7 @@ export const authOptions: NextAuthOptions = {
           gender: user.gender,
           dob: user.dob,
           address: user.address,
+          token: isExpo ? token : undefined,
         };
       },
     }),
