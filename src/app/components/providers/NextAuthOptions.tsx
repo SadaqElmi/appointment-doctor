@@ -36,8 +36,7 @@ export const authOptions: NextAuthOptions = {
         expo: { label: "Expo", type: "text", optional: true },
       },
       async authorize(
-        credentials: Record<"email" | "password" | "expo", string> | undefined,
-        req?: any
+        credentials: Record<"email" | "password" | "expo", string> | undefined
       ): Promise<DBUser | null> {
         await connectDB();
 
