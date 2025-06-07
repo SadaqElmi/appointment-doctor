@@ -33,8 +33,14 @@ export async function POST(req: NextRequest) {
       token,
       user: {
         id: user._id,
-        email: user.email,
         name: user.name,
+        email: user.email,
+        phone: user.phone,
+        dob: user.dob,
+        gender: user.gender,
+        image: user.image,
+        address: user.address,
+        role: user.role,
       },
     });
   } catch (err) {
